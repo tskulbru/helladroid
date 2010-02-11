@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:text="How I met your mother - 4x01 - Jenkins"
+        android:text=""
         android:maxLines="1"
     	/>
 	<RelativeLayout
@@ -39,7 +39,7 @@
 	        android:textColor="#6a6a6a"
 	        android:layout_alignParentRight="true"
             android:layout_marginRight="6px"
-            android:text="104 / 344 MB"
+            android:text=""
 	    />
 	</RelativeLayout>
 </LinearLayout>
