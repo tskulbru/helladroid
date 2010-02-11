@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HellaDroid</string>
+	<string name="description">This is an Android application which utilizes XMLRPC to monitor a running HellaNZB process on a remote server.</string>
+	<string name="description_help">For any questions, bug reports, feature requests, please refer to http://code.google.com/p/helladroid</string>
+	
+	<string name="setting_server_url">HellaNZB server address</string>
+	<string name="setting_server_port">HellaNZB server port</string>
+	<string name="setting_server_password">Password</string>
+	<string name="setting_server_port_default">8760</string>
+	<string name="setting_server_password_default">changeme</string>
+	
+	<string name="options_menu_AddNzbID">Add NZB</string>
+	<string name="options_menu_Pause">Continue/Pause</string>
+	<string name="options_menu_RefreshQueue">Refresh</string>
+	<string name="options_menu_Preferences">Preferences</string>
+	<string name="options_menu_About">About</string>
+	<string name="options_menu_Quit">Quit</string>
+	
+	<string name="context_DownloadNow">Download Now</string>
+	<string name="context_DownloadNext">Download Next</string>
+	<string name="context_DownloadLast">Download Last</string>
+	<string name="context_MoveUp">Move Up</string>
+	<string name="context_MoveDown">Move Down</string>
+	<string name="context_Dequeue">Remove</string>
+	
+	<string name="msg_server_down">Server appears to be offline</string>
+	<string name="msg_nzb_continue">Continuing download..</string>
+	<string name="msg_nzb_pause">Pausing download..</string>
+	<string name="msg_enqueue_newzbin">NewzBin ID enqueued..</string>
+</resources>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent"
+	android:orientation="vertical">
+	<TextView android:text="Currently downlading" 
+		android:id="@+id/curDownHeaderText"
+		android:background="#808080"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:textStyle="bold"
+		/>
+	<RelativeLayout android:id="@+id/currDownLayout" 
+		android:layout_width="fill_parent" 
+		android:layout_height="90px"
+		android:paddingTop="5px">
+		<TextView android:id="@+id/currNzbName" 
+			android:text="Not downloading anything"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:typeface="sans"
+			android:maxLines="1"
+			/>
+		<ProgressBar android:id="@+id/currPercBar" 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/currNzbName"
+			style="?android:attr/progressBarStyleHorizontal"
+			android:progress="0"
+			/>
+		<TextView android:id="@+id/currNzbETA"
+			android:text="--:--:--" 
+			android:layout_width="60px" 
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/currPercBar"
+			/>
+		<TextView android:id="@+id/currNzbMb"
+			android:text="-- / -- MB" 
+			android:layout_width="160px" 
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/currPercBar"
+			android:layout_alignParentBottom="true"
+			android:layout_centerHorizontal="true"
+			/>
+		<TextView android:layout_width="wrap_content" 
+			android:layout_below="@+id/currPercBar" 
+			android:layout_alignParentRight="true" 
+			android:layout_height="wrap_content" 
+			android:id="@+id/currNzbSpeed"
+			android:paddingRight="5px"
+			android:text="10000 KB/s "
+			/>
+	</RelativeLayout>
+	<RelativeLayout android:id="@+id/currDownLayout2" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:paddingTop="5px">
+		<TextView android:text="Queue"
+			android:id="@+id/curQueueHeaderText"
+			android:background="#808080"
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+			android:textStyle="bold"
+			/>
+		</RelativeLayout>
+	<ListView android:id="@+id/queueNzbList"
+		android:layout_weight="1.0"
+		android:layout_width="fill_parent"
+		android:layout_height="0dip"
+		android:fadingEdge="none"
+		/>
+</LinearLayout>

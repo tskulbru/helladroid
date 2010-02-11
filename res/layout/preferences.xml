@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceCategory android:title="Server Settings" >
+	<EditTextPreference 
+			android:key="server_url" 
+			android:title="Server URL" 
+			android:summary="@string/setting_server_url"
+			/>
+	<EditTextPreference 
+			android:key="server_port" 
+			android:title="Server Port" 
+			android:summary="@string/setting_server_port" 
+			android:defaultValue="@string/setting_server_port_default"
+			/>
+	<EditTextPreference
+			android:key="server_password" 
+			android:title="Server Password" 
+			android:summary="@string/setting_server_password" 
+			android:defaultValue="@string/setting_server_password_default"
+			/>
+	<CheckBoxPreference
+        android:key="server_active"
+        android:title="Activate"
+        android:summary="Activates the server configuration"
+        android:dependency="server_url"
+        android:defaultValue="false"
+        />
+	
+	</PreferenceCategory>
+</PreferenceScreen>

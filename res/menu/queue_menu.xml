@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  	<item 
+		android:id="@+id/qItemDownloadNow" android:title="@string/context_DownloadNow"/>
+	<item 
+		android:id="@+id/qItemMoveUp" android:title="@string/context_MoveUp"/>
+	<item 
+		android:id="@+id/qItemMoveDown" android:title="@string/context_MoveDown"/>
+	<item 
+		android:id="@+id/qItemDownloadLast" android:title="@string/context_DownloadLast"/>
+	<item 
+		android:id="@+id/qItemDequeue" android:title="@string/context_Dequeue"/>
+</menu>

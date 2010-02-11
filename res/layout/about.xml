@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent">
+	<RelativeLayout 
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent" >
+		<ImageView  
+			android:layout_width="48dip" 
+			android:layout_height="48dip" 
+			android:scaleType="center"
+			android:id="@+id/icon"
+			android:padding="15dip"
+			android:src="@drawable/icon"
+			android:layout_centerHorizontal="true" />
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:id="@+id/helladroid" 
+			android:text="HellaDroid x.x.x" 
+			android:padding="10dip"
+			android:layout_centerHorizontal="true" 
+			android:layout_below="@id/icon"
+			android:textSize="18dip"
+			android:textStyle="bold" />
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:id="@+id/about" 
+			android:text="@string/description"  
+			android:padding="10dip"
+			android:layout_below="@id/helladroid" />
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:id="@+id/help" 
+			android:text="@string/description_help" 
+			android:padding="10dip"
+			android:autoLink="web"
+			android:layout_below="@id/about" />
+	</RelativeLayout>
+</ScrollView>
