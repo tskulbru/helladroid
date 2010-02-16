@@ -92,9 +92,6 @@ public class HellaDroid extends Activity {
 		listview.setAdapter(new QueueNzbListRowAdapter(this, queueRows));
 		listview.setOnCreateContextMenuListener(this);
 
-
-		manualQueueRefresh();
-		// Also start the auto refresh
 		autoQueueRefresh();
 	}
 
