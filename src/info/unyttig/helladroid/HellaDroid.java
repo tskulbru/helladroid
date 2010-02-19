@@ -28,10 +28,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnCreateContextMenuListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -66,7 +68,8 @@ public class HellaDroid extends Activity {
 	private final int QUIT_PROGRAM = 1;
 	private final int ADD_NEWZBIN_ID = 2;
 	private final int ABOUT_DIALOG = 3;
-	
+	private final int CANCEL_ITEM = 99;
+
 	// TODO: Let users choose the time intervall
 	private final int REFRESH_INTERVALL = 10000;
 
@@ -77,7 +80,7 @@ public class HellaDroid extends Activity {
 
 	private Timer t;
 	private ListView listview;
-	
+
 	GoogleAnalyticsTracker tracker;
 
 	/** 
@@ -93,7 +96,7 @@ public class HellaDroid extends Activity {
 		tracker = GoogleAnalyticsTracker.getInstance();
 		tracker.start("UA-8731983-3", 20, this);
 		tracker.trackPageView("/hellaDroidHome");
-		
+
 		preferences = getSharedPreferences("HellaDroid", 0);
 		paused = !preferences.getBoolean("server_active", false);
 
@@ -138,6 +141,9 @@ public class HellaDroid extends Activity {
 		return true;
 	}
 
+	/**
+	 * Create the context menu for the queuelist items, using queue_menu.xml as layout
+	 */
 	public void onCreateContextMenu(ContextMenu menu, View view,
 			ContextMenuInfo menuInfo) {
 		MenuInflater inflater = getMenuInflater();
@@ -180,12 +186,19 @@ public class HellaDroid extends Activity {
 	 * The context menu for the ListView items. Can manipulate the queue 
 	 * items in several ways.
 	 */
+	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		switch(item.getItemId()) {
+		case CANCEL_ITEM:
+			HellaNZBController.qCurrCancel(messageHandler);
+			return true;
+		}
+
 		String nzbItem = getNzbItemAdapter().getItem((int)info.id);
 		String[] temp = nzbItem.split("#");
 		String nzbId = temp[2];
-		
+
 		switch(item.getItemId()) {
 		case R.id.qItemDownloadNow:
 			HellaNZBController.qItemDownloadNowOrLast(messageHandler, nzbId, true);
@@ -201,6 +214,9 @@ public class HellaDroid extends Activity {
 			return true;
 		case R.id.qItemDequeue:
 			HellaNZBController.qItemDequeue(messageHandler, nzbId);
+			return true;
+		case CANCEL_ITEM:
+			showDialog(ABOUT_DIALOG);
 			return true;
 		} return false;
 	}
@@ -319,6 +335,7 @@ public class HellaDroid extends Activity {
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 	}
 
+
 	/**
 	 * The message handler, controls what message should be displayed
 	 * based on the id brought back from the controller.
@@ -354,6 +371,36 @@ public class HellaDroid extends Activity {
 		String[] values = curr.split("#");
 		try
 		{
+			RelativeLayout rl = (RelativeLayout) findViewById(R.id.currDownLayout);
+			
+			if(values[0].compareTo("Not downloading anything") != 0) {
+				rl.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
+
+					@Override
+					public void onCreateContextMenu(ContextMenu menu, View v,
+							ContextMenuInfo menuInfo) {
+						// TODO Auto-generated method stub
+
+						menu.add(0, CANCEL_ITEM, 0, "Cancel download");
+					}
+
+				}
+				);
+			} else {
+				rl.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
+
+					@Override
+					public void onCreateContextMenu(ContextMenu menu, View v,
+							ContextMenuInfo menuInfo) {
+					}
+
+				}
+				);
+			}
+			if(HellaNZBController.isPaused)
+				((TextView) findViewById(R.id.currStatus)).setText("Paused");
+			else
+				((TextView) findViewById(R.id.currStatus)).setText("");
 			((TextView) findViewById(R.id.currNzbName)).setText(values[0]);
 			((ProgressBar) findViewById(R.id.currPercBar)).setProgress(Integer.parseInt(values[1]));
 			((TextView) findViewById(R.id.currNzbETA)).setText(values[2]);
@@ -392,7 +439,7 @@ public class HellaDroid extends Activity {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Fetches the ListView adapter.
 	 * 
