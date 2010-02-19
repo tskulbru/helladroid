@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.google.android.apps.analytics.GoogleAnalyticsTracker;
+
 import info.unyttig.helladroid.R;
 import info.unyttig.helladroid.activity.SettingsActivity;
 import info.unyttig.helladroid.hellanzb.HellaNZBController;
@@ -75,6 +77,8 @@ public class HellaDroid extends Activity {
 
 	private Timer t;
 	private ListView listview;
+	
+	GoogleAnalyticsTracker tracker;
 
 	/** 
 	 * Called when the activity is first created. 
@@ -85,6 +89,11 @@ public class HellaDroid extends Activity {
 		setContentView(R.layout.main);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+		// Tracking info
+		tracker = GoogleAnalyticsTracker.getInstance();
+		tracker.start("UA-8731983-3", 20, this);
+		tracker.trackPageView("/hellaDroidHome");
+		
 		preferences = getSharedPreferences("HellaDroid", 0);
 		paused = !preferences.getBoolean("server_active", false);
 
@@ -116,6 +125,7 @@ public class HellaDroid extends Activity {
 	 */
 	protected void onDestroy() {
 		super.onDestroy();
+		tracker.stop();
 		this.finish();
 	}
 
@@ -270,6 +280,7 @@ public class HellaDroid extends Activity {
 	private void manualQueueRefresh() {
 		if(checkForLife()) {
 			HellaNZBController.listQueue(messageHandler);
+			tracker.dispatch();
 		}
 	}
 
