@@ -39,5 +39,19 @@
 			android:padding="10dip"
 			android:autoLink="web"
 			android:layout_below="@id/about" />
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:id="@+id/analytics" 
+			android:text="@string/description_analytics" 
+			android:padding="10dip"
+			android:layout_below="@id/help" />
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:id="@+id/credit" 
+			android:text="@string/description_credit" 
+			android:padding="10dip"
+			android:layout_below="@id/analytics" />
 	</RelativeLayout>
 </ScrollView>
