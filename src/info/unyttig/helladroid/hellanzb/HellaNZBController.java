@@ -67,8 +67,7 @@ public final class HellaNZBController {
 				Thread thread = new Thread() {
 					public void run() {
 						try {
-
-							Map<String,Object> obj = (Map<String, Object>) makeApiCall("status");
+							obj = (Map<String, Object>) makeApiCall("status");
 							String is_paused = obj.get("is_paused").toString();
 							if(is_paused == "true")
 								isPaused = true;
@@ -115,6 +114,12 @@ public final class HellaNZBController {
 				obj.get("percent_complete").toString() + "#" + eta + "#" + 
 				obj.get("queued_mb").toString() + "#" + obj2.get("total_mb").toString() + "#" + 
 				obj.get("rate").toString();
+				
+				String is_paused = obj.get("is_paused").toString();
+				if(is_paused == "true")
+					isPaused = true;
+				else
+					isPaused = false;
 
 				Message message = new Message();
 				message.setTarget(messageHandler);
@@ -312,6 +317,31 @@ public final class HellaNZBController {
 		} else callBackUpdateStatus(messageHandler, R.string.msg_server_down);
 	}
 	
+	/**
+	 * Cancels the currently downloading item.
+	 * 
+	 * @param messageHandler
+	 */
+	public static void qCurrCancel(final Handler messageHandler) {
+		if(!isAlive) setupConnection();
+		if(isAlive) {
+			if(!pendingQuery) {
+				Thread thread = new Thread() {
+					public void run() {
+						try {
+							makeApiCall("cancel");
+						} catch(Exception e) {
+
+						} finally {
+							pendingQuery = false;
+						}
+					}
+				};
+				pendingQuery = true;
+				thread.start();
+			}
+		} else callBackUpdateStatus(messageHandler, R.string.msg_server_down);
+	}
 	/**
 	 * Send back a update status message to the message handler.
 	 * This is used for short messages to the user, like "Server is offline" etc.
