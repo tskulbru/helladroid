@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:text=""
+        android:paddingLeft="2px"
         android:maxLines="1"
     	/>
 	<RelativeLayout
