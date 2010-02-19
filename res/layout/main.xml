@@ -3,13 +3,26 @@
 	android:layout_width="fill_parent" 
 	android:layout_height="fill_parent"
 	android:orientation="vertical">
-	<TextView android:text="Currently downlading" 
-		android:id="@+id/curDownHeaderText"
-		android:background="#808080"
+	<RelativeLayout android:id="@+id/currDownHeaderLayout" 
 		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:textStyle="bold"
-		/>
+		android:layout_height="25px"
+		android:paddingTop="5px"
+		android:background="#808080">
+		<TextView android:text="Currently downlading" 
+			android:id="@+id/curDownHeaderText"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:textStyle="bold"
+			android:paddingLeft="2px"
+			/>
+		<TextView android:text=""
+			android:id="@+id/currStatus"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textStyle="bold"
+			android:layout_alignParentRight="true"
+			android:paddingRight="5px" android:textColor="#FF0000"/>
+	</RelativeLayout>
 	<RelativeLayout android:id="@+id/currDownLayout" 
 		android:layout_width="fill_parent" 
 		android:layout_height="90px"
@@ -20,6 +33,7 @@
 			android:layout_height="wrap_content" 
 			android:typeface="sans"
 			android:maxLines="1"
+			android:paddingLeft="2px"
 			/>
 		<ProgressBar android:id="@+id/currPercBar" 
 			android:layout_width="fill_parent" 
@@ -33,6 +47,7 @@
 			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
 			android:layout_below="@+id/currPercBar"
+			android:paddingLeft="2px"
 			/>
 		<TextView android:id="@+id/currNzbMb"
 			android:text="-- / -- MB" 
@@ -48,19 +63,21 @@
 			android:layout_height="wrap_content" 
 			android:id="@+id/currNzbSpeed"
 			android:paddingRight="5px"
-			android:text="10000 KB/s "
+			android:text="- KB/s "
 			/>
 	</RelativeLayout>
 	<RelativeLayout android:id="@+id/currDownLayout2" 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:paddingTop="5px">
+		android:paddingTop="5px"
+		android:background="#808080">
 		<TextView android:text="Queue"
 			android:id="@+id/curQueueHeaderText"
 			android:background="#808080"
-			android:layout_width="fill_parent" 
+			android:layout_width="wrap_content" 
 			android:layout_height="wrap_content"
 			android:textStyle="bold"
+			android:paddingLeft="2px"
 			/>
 		</RelativeLayout>
 	<ListView android:id="@+id/queueNzbList"
