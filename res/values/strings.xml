@@ -9,6 +9,7 @@
 	<string name="setting_server_url">HellaNZB server address</string>
 	<string name="setting_server_port">HellaNZB server port</string>
 	<string name="setting_server_password">Password</string>
+	<string name="setting_server_url_default">http://</string>
 	<string name="setting_server_port_default">8760</string>
 	<string name="setting_server_password_default">changeme</string>
 	
