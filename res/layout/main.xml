@@ -5,8 +5,7 @@
 	android:orientation="vertical">
 	<RelativeLayout android:id="@+id/currDownHeaderLayout" 
 		android:layout_width="fill_parent" 
-		android:layout_height="25px"
-		android:paddingTop="5px"
+		android:layout_height="wrap_content"
 		android:background="#808080">
 		<TextView android:text="Currently downlading" 
 			android:id="@+id/curDownHeaderText"
@@ -26,7 +25,7 @@
 	<RelativeLayout android:id="@+id/currDownLayout" 
 		android:layout_width="fill_parent" 
 		android:layout_height="90px"
-		android:paddingTop="5px">
+		>
 		<TextView android:id="@+id/currNzbName" 
 			android:text="Not downloading anything"
 			android:layout_width="fill_parent" 
