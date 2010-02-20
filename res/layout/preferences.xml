@@ -6,6 +6,7 @@
 			android:key="server_url" 
 			android:title="Server URL" 
 			android:summary="@string/setting_server_url"
+			android:defaultValue="@string/setting_server_url_default"
 			/>
 	<EditTextPreference 
 			android:key="server_port" 
