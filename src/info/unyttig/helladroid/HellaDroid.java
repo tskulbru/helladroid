@@ -232,6 +232,7 @@ public class HellaDroid extends Activity {
 
 		switch(id) {
 		case ADD_NEWZBIN_ID:
+			tracker.trackPageView("/hellaAddNewzId");
 			builder.setTitle("Add NZB from Newzbin")
 			.setMessage("Enter the Newzbin ID you wish to add to queue:")
 			.setView(input)
@@ -281,6 +282,7 @@ public class HellaDroid extends Activity {
 			alert = builder.create();
 			return alert;
 		case ABOUT_DIALOG:
+			tracker.trackPageView("/hellaAbout");
 			builder.setTitle("About");
 			View about = getLayoutInflater().inflate(R.layout.about, null);
 			((TextView)about.findViewById(R.id.helladroid)).setText("HellaDroid v" + getCurrentVersion(this));
