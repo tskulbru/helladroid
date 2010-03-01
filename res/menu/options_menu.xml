@@ -13,6 +13,10 @@
 		android:id="@+id/menuRefreshQueue" 
 		android:title="@string/options_menu_RefreshQueue"/>
 	<item
+    	android:icon="@android:drawable/ic_menu_search"
+    	android:id="@+id/menuSearch" 
+    	android:title="@string/options_menu_Search"/>
+	<item
     	android:icon="@android:drawable/ic_menu_preferences"
     	android:id="@+id/menuPreferences" 
     	android:title="@string/options_menu_Preferences"/>

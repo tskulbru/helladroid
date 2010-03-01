@@ -12,11 +12,16 @@
 	<string name="setting_server_url_default">http://</string>
 	<string name="setting_server_port_default">8760</string>
 	<string name="setting_server_password_default">changeme</string>
+	<string name="setting_newzbin_username">NewzBin login username</string>
+	<string name="setting_newzbin_password">NewzBin login password</string>
+	<string name="setting_newzbin_retention">Your usenet providers retention (def: 7 days)</string>
+	<string name="setting_newzbin_limit">Number of search results shown (def: 10)</string>
 	
 	<string name="options_menu_AddNzbID">Add NZB</string>
 	<string name="options_menu_Pause">Continue/Pause</string>
 	<string name="options_menu_RefreshQueue">Refresh</string>
 	<string name="options_menu_Preferences">Preferences</string>
+	<string name="options_menu_Search">Search</string>
 	<string name="options_menu_About">About</string>
 	<string name="options_menu_Quit">Quit</string>
 	
@@ -31,4 +36,8 @@
 	<string name="msg_nzb_continue">Continuing download..</string>
 	<string name="msg_nzb_pause">Pausing download..</string>
 	<string name="msg_enqueue_newzbin">NewzBin ID enqueued..</string>
+	<string name="msg_empty_search_string">Missing search string</string>
+	
+	<string name="search_category_prompt">Choose category</string>
+	<string name="search_quality_prompt">Choose quality</string>
 </resources>

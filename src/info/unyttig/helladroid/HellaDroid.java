@@ -1,12 +1,14 @@
 package info.unyttig.helladroid;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import info.unyttig.helladroid.R;
+import info.unyttig.helladroid.activity.NewzBinSearchActivity;
 import info.unyttig.helladroid.activity.SettingsActivity;
 import info.unyttig.helladroid.hellanzb.HellaNZBController;
 import android.app.Activity;
@@ -22,21 +24,27 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnCreateContextMenuListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 /**
  * This file is a part of HellaDroid
@@ -68,6 +76,7 @@ public class HellaDroid extends Activity {
 	private final int QUIT_PROGRAM = 1;
 	private final int ADD_NEWZBIN_ID = 2;
 	private final int ABOUT_DIALOG = 3;
+	private final int SEARCH_DIALOG = 4;
 	private final int CANCEL_ITEM = 99;
 
 	// TODO: Let users choose the time intervall
@@ -77,6 +86,7 @@ public class HellaDroid extends Activity {
 	private static ArrayList<String> queueRows = new ArrayList<String>();
 	public static boolean paused = false;
 	private final Handler handler = new Handler();
+	HashMap<String,String> searchCatnHd = new HashMap<String,String>();
 
 	private Timer t;
 	private ListView listview;
@@ -104,6 +114,28 @@ public class HellaDroid extends Activity {
 		listview.setAdapter(new QueueNzbListRowAdapter(this, queueRows));
 		listview.setOnCreateContextMenuListener(this);
 
+		// Fill the newzbin categories (0(1) so no worries)
+		searchCatnHd.put("Everything", "-1");
+		searchCatnHd.put("Anime", "11");
+		searchCatnHd.put("Apps", "1");
+		searchCatnHd.put("Books", "13");
+		searchCatnHd.put("Consoles", "2");
+		searchCatnHd.put("Discussions", "15");
+		searchCatnHd.put("Emulation", "10");
+		searchCatnHd.put("Games", "4");
+		searchCatnHd.put("Misc", "5");
+		searchCatnHd.put("Movies", "6");
+		searchCatnHd.put("Music", "7");
+		searchCatnHd.put("PDA", "12");
+		searchCatnHd.put("Resources", "14");
+		searchCatnHd.put("TV", "8");
+		
+		// Quality
+		searchCatnHd.put("Any", "");
+		searchCatnHd.put("XviD", "attr:VideoF~xvid ");
+		searchCatnHd.put("720p", "attr:VideoF~720p ");
+		searchCatnHd.put("1080p", "attr:VideoF~1080p ");
+		
 		checkForLife();
 		autoQueueRefresh();
 	}
@@ -173,6 +205,9 @@ public class HellaDroid extends Activity {
 		case R.id.menuRefreshQueue:
 			if(checkForLife())
 				manualQueueRefresh();
+			return true;
+		case R.id.menuSearch:
+				showDialog(SEARCH_DIALOG);
 			return true;
 		case R.id.menuAbout:
 			showDialog(ABOUT_DIALOG);
@@ -248,7 +283,8 @@ public class HellaDroid extends Activity {
 				}
 			});
 			alert = builder.create();
-			return alert;	
+			return alert;
+
 		case EMPTY_SETTINGS:
 			builder.setTitle("Configuration needed")
 			.setMessage("HellaDroid isn't configured properly, do it now?")
@@ -289,6 +325,40 @@ public class HellaDroid extends Activity {
 			builder.setView(about);
 			alert = builder.create();
 			return alert;
+		case SEARCH_DIALOG:
+			tracker.trackPageView("/hellaSearch");
+			final View searchDialog = getLayoutInflater().inflate(R.layout.searchdialog, null);
+			builder.setTitle("Search NewzBin")
+			.setMessage("Please enter your search")
+			.setView(searchDialog)
+			.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					try {
+						EditText et = (EditText) searchDialog.findViewById(R.id.searchString);
+						Spinner s = (Spinner) searchDialog.findViewById(R.id.searchCatgegorySpinner);
+						Spinner s2 = (Spinner) searchDialog.findViewById(R.id.searchQualitySpinner);
+						if(et.getText().length() <= 0) {
+							DisplayRToast(R.string.msg_empty_search_string);
+							return;
+						}
+						String ss = searchCatnHd.get(s2.getSelectedItem().toString()) + et.getText().toString();
+						showSearchActivity(ss, searchCatnHd.get(s.getSelectedItem().toString()));
+						Log.i("SearchString: ", et.getText().toString());
+						Log.i("SearchCategory: ", s.getSelectedItem().toString());
+					} catch(Exception e) {
+						Log.e("SearchException: ", ""+e);
+					}
+					return;
+				}
+			})
+			.setNegativeButton("Cancel",
+					new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					return;
+				}
+			});
+			alert = builder.create();
+			return alert;
 		}
 		return null;
 	}
@@ -327,6 +397,19 @@ public class HellaDroid extends Activity {
 	 */
 	private void showSettings() {
 		startActivity(new Intent(this, SettingsActivity.class));
+	}
+	
+	/**
+	 * This method starts the search activity
+	 * 
+	 * @param searchString
+	 * @param categoryNr
+	 */
+	private void showSearchActivity(String searchString, String categoryNr) {
+		Intent searchIntent = new Intent(this, NewzBinSearchActivity.class);
+		searchIntent.putExtra("searchString", searchString);
+		searchIntent.putExtra("categoryNr", categoryNr);
+		startActivity(searchIntent);
 	}
 
 	/**
@@ -375,7 +458,7 @@ public class HellaDroid extends Activity {
 		try
 		{
 			RelativeLayout rl = (RelativeLayout) findViewById(R.id.currDownLayout);
-			
+
 			if(values[0].compareTo("Not downloading anything") != 0) {
 				rl.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
 

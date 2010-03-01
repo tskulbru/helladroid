@@ -1,32 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
-<PreferenceCategory android:title="Server Settings" >
-	<EditTextPreference 
+	<PreferenceCategory android:title="Server Settings" >
+		<EditTextPreference 
 			android:key="server_url" 
 			android:title="Server URL" 
 			android:summary="@string/setting_server_url"
 			android:defaultValue="@string/setting_server_url_default"
 			/>
-	<EditTextPreference 
+		<EditTextPreference 
 			android:key="server_port" 
 			android:title="Server Port" 
 			android:summary="@string/setting_server_port" 
 			android:defaultValue="@string/setting_server_port_default"
 			/>
-	<EditTextPreference
+		<EditTextPreference
 			android:key="server_password" 
 			android:title="Server Password" 
 			android:summary="@string/setting_server_password" 
 			android:defaultValue="@string/setting_server_password_default"
+			android:password="true"
 			/>
-	<CheckBoxPreference
-        android:key="server_active"
-        android:title="Activate"
-        android:summary="Activates the server configuration"
-        android:dependency="server_url"
-        android:defaultValue="false"
-        />
-	
+		<CheckBoxPreference
+        	android:key="server_active"
+        	android:title="Activate"
+        	android:summary="Activates the server configuration"
+        	android:dependency="server_url"
+        	android:defaultValue="false"
+        	/>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="NewzBin Settings">
+		<EditTextPreference 
+			android:key="newzbin_username" 
+			android:title="NewzBin Username" 
+			android:summary="@string/setting_newzbin_username"
+			android:dependency="server_active"
+			/>
+		<EditTextPreference 
+			android:key="newzbin_password" 
+			android:title="NewzBin Password" 
+			android:summary="@string/setting_newzbin_password"
+			android:dependency="newzbin_username"
+			android:password="true"
+			/>
+		<ListPreference
+			android:key="newzbin_retention"
+			android:title="NewzBin Retention"
+			android:summary="@string/setting_newzbin_retention"
+			android:dependency="newzbin_password"
+			android:entries="@array/searchRetention"
+			android:entryValues="@array/searchRetention"
+			android:defaultValue="7"
+			/>
+		<ListPreference
+			android:key="newzbin_search_limit"
+			android:title="Result Limit"
+			android:summary="@string/setting_newzbin_limit"
+			android:dependency="newzbin_password"
+			android:entries="@array/searchLimits"
+			android:entryValues="@array/searchLimits"
+			android:defaultValue="10"
+			/>
 	</PreferenceCategory>
 </PreferenceScreen>

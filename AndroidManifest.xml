@@ -16,6 +16,7 @@
         </activity>
 
     <activity android:name=".activity.SettingsActivity"></activity>
+<activity android:name=".activity.NewzBinSearchActivity"></activity>
 </application>
     <uses-sdk android:minSdkVersion="4"
     		  android:maxSdkVersion="7" 

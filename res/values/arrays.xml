@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="searchCategoryTypes">
+		<item>Everything</item>
+		<item>Anime</item>
+		<item>Apps</item>
+		<item>Books</item>
+		<item>Consoles</item>
+		<item>Discussions</item>
+		<item>Emluation</item>
+		<item>Games</item>
+		<item>Misc</item>
+		<item>Movies</item>
+		<item>Music</item>
+		<item>PDA</item>
+		<item>Resources</item>
+		<item>TV</item>
+	</string-array>
+	<string-array name="searchQuality">
+		<item>Any</item>
+		<item>XviD</item>
+		<item>720p</item>
+		<item>1080p</item>
+	</string-array>
+	<string-array name="searchRetention">
+		<item>7</item>
+		<item>100</item>
+		<item>200</item>
+		<item>365</item>
+		<item>600</item>
+	</string-array>
+	<string-array name="searchLimits">
+		<item>10</item>
+		<item>20</item>
+		<item>30</item>
+	</string-array>
+</resources>

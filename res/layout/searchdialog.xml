@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+	<EditText 
+		android:id="@+id/searchString" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:lines="1"
+		/>
+	<Spinner 
+		android:id="@+id/searchCatgegorySpinner" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:prompt="@string/search_category_prompt"
+		android:entries="@array/searchCategoryTypes"
+		/>
+	<Spinner
+		android:id="@+id/searchQualitySpinner"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:prompt="@string/search_quality_prompt"
+		android:entries="@array/searchQuality"
+		/>
+</LinearLayout>
