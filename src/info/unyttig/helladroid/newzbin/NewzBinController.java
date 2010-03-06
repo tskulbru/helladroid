@@ -9,8 +9,11 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList; 
 import java.util.HashMap;
-import java.util.Iterator; 
-import java.util.Map; 
+import java.util.Iterator;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.http.HttpResponse; 
 import org.apache.http.NameValuePair; 
@@ -21,25 +24,86 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient; 
 import org.apache.http.message.BasicNameValuePair; 
 import org.apache.http.util.ByteArrayBuffer;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+/**
+ * This file is a part of HellaDroid
+ * 
+ * HellaDroid - http://code.google.com/p/helladroid
+ * "A remote HellaNZB query client."
+ * 
+ * Copyright (C) 2010 Torstein S. Skulbru <serrghi>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author Torstein S. Skulbru <serrghi>
+ * @see <a href="http://code.google.com/p/helladroid
+ */
 public class NewzBinController { 
 	private final static String LOG_NAME = "<HellaDroid> NewzbinController: ";
 	private final static SharedPreferences preferences = HellaDroid.preferences;
 	private final static String NBAPIURL = "http://www.newzbin.com/api/";
 	private final static int MSG_NOTIFY_USER_ERROR = 2;
+	public static int totalRes;
+	public static HashMap<Integer, NewzBinReport> reports = new HashMap<Integer, NewzBinReport>();
+	public static HashMap<Integer, NewzBinReport> detailedReports = new HashMap<Integer, NewzBinReport>();
 
 	/**
-	 * TODO sjekk om dne finnes fra før i et hashmap<string,NewzBinReport>
-	 * TODO utvid newzbinreport til å ha reportInfo også event lag et nytt obj og knytt de
+	 * Fetches a report from Newzbin based on a given id.
+	 * However if the report is already cached, its just fetched from the hashmap.
 	 * @param id
 	 */
-	public static void getReportInfo(int id) {
+	public static NewzBinReport getReportInfo(int id) {
+		if(detailedReports.containsKey(id))
+			return detailedReports.get(id);
+		
 		String url = NBAPIURL + "reportinfo/";
+		HashMap<String, String> searchOptions = new HashMap<String, String>();
+		searchOptions.put("id", ""+id);
+		try {
+			HttpResponse response = doPost(url, searchOptions);
+			checkReturnCode(response.getStatusLine().getStatusCode(), false);
+			InputStream is = response.getEntity().getContent(); 
+
+			SAXParserFactory spf = SAXParserFactory.newInstance();
+			SAXParser sp = spf.newSAXParser();
+			XMLReader xr = sp.getXMLReader();
+			NewzBinDRHandler handler = new NewzBinDRHandler();
+			if(reports.containsKey(id))
+				handler.nbdr = reports.get(id);
+			xr.setContentHandler(handler);
+			xr.parse(new InputSource(is));
+			detailedReports.put(id, handler.getParsedData());
+			return handler.getParsedData();
+		} catch (ClientProtocolException e) {
+			Log.e(LOG_NAME, "ClientProtocol thrown: ", e);
+		} catch (IOException e) {
+			Log.e(LOG_NAME, "IOException thrown: ", e);
+		} catch (NewzBinPostReturnCodeException e) {
+			Log.e(LOG_NAME, "POST ReturnCode error: " + e.toString());
+		} catch (ParserConfigurationException e) {
+			Log.e(LOG_NAME, "ParserError thrown: ", e);
+		} catch (SAXException e) {
+			Log.e(LOG_NAME, "SAXError thrown: ", e);
+		} return null;
 	}
 
 	/**
@@ -70,11 +134,18 @@ public class NewzBinController {
 			
 			BufferedReader reader = new BufferedReader(new StringReader(text));
 			String str = reader.readLine();
-			String totalRes = str;
+			totalRes = Integer.parseInt(str.substring(str.indexOf("=")+1));
 			while ((str = reader.readLine()) != null) {
 				String[] values = str.split("	");
-				NewzBinReport temp2 = new NewzBinReport(Integer.parseInt(values[0]),Long.parseLong(values[1]),values[2]);
-				searchRes.add(temp2);
+				NewzBinReport temp2 = new NewzBinReport();
+				temp2.setNzbId(Integer.parseInt(values[0]));
+				temp2.setSize(Long.parseLong(values[1]));
+				temp2.setTitle(values[2]);
+				
+				if(!reports.containsKey(temp2.getNzbId())) {
+					reports.put(temp2.getNzbId(), temp2);
+					searchRes.add(temp2);
+				} else searchRes.add(reports.get(temp2.getNzbId()));
 			}
 
 			Object[] result = new Object[2];
@@ -154,7 +225,9 @@ public class NewzBinController {
 
 		if (kvPairs != null && kvPairs.isEmpty() == false) { 
 			ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>( 
-					kvPairs.size()+2);
+					kvPairs.size()+4);
+			nameValuePairs.add(new BasicNameValuePair("limit", preferences.getString("newzbin_search_limit", "10")));
+			nameValuePairs.add(new BasicNameValuePair("retention", preferences.getString("newzbin_retention", "7")));
 			nameValuePairs.add(new BasicNameValuePair("username", preferences.getString("newzbin_username", ""))); 
 			nameValuePairs.add(new BasicNameValuePair("password", preferences.getString("newzbin_password", ""))); 
 			String k, v; 
@@ -168,5 +241,4 @@ public class NewzBinController {
 		} 
 		return httpclient.execute(httppost);  
 	} 
-
 } 

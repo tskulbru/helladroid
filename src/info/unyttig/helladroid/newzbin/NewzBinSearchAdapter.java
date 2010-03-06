@@ -11,6 +11,30 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+/**
+ * This file is a part of HellaDroid
+ * 
+ * HellaDroid - http://code.google.com/p/helladroid
+ * "A remote HellaNZB query client."
+ * 
+ * Copyright (C) 2010 Torstein S. Skulbru <serrghi>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author Torstein S. Skulbru <serrghi>
+ * @see <a href="http://code.google.com/p/helladroid
+ */
 public class NewzBinSearchAdapter extends ArrayAdapter<NewzBinReport> {
 	Activity context;
 //	private ArrayList<String> searchItems = new ArrayList<String>();
@@ -30,20 +54,10 @@ public class NewzBinSearchAdapter extends ArrayAdapter<NewzBinReport> {
 		LayoutInflater inflater = context.getLayoutInflater();
 		View row = inflater.inflate(R.layout.searchnzbitem, null);
 		NewzBinReport temp = searchItems.get(position);
-		long size = temp.getNzbSize()/1024/1024;
-		String nzbSizeMB = size + " MB";
 		
-		((TextView) row.findViewById(R.id.searchRowLabelNzbname)).setText(temp.getNzbName());
+		((TextView) row.findViewById(R.id.searchRowLabelNzbname)).setText(temp.getTitle());
 		((TextView) row.findViewById(R.id.searchRowLabelNzbID)).setText("ID: " + temp.getNzbId());
-		((TextView) row.findViewById(R.id.searchRowLabelNzbSize)).setText(nzbSizeMB);
-		
-//		String[] values = searchItems.get(position).split("	");
-//		long size = Long.parseLong(values[1])/1024/1024;
-//		String nzbSizeMB = size + " MB";
-//		
-//		((TextView) row.findViewById(R.id.searchRowLabelNzbname)).setText(values[2]);
-//		((TextView) row.findViewById(R.id.searchRowLabelNzbID)).setText("ID: " + values[0]);
-//		((TextView) row.findViewById(R.id.searchRowLabelNzbSize)).setText(nzbSizeMB);
+		((TextView) row.findViewById(R.id.searchRowLabelNzbSize)).setText(temp.getSize());
 		return (row);
 	}
 

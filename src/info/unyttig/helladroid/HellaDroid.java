@@ -18,7 +18,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -26,15 +25,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnCreateContextMenuListener;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -44,7 +41,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 /**
  * This file is a part of HellaDroid
@@ -68,12 +64,10 @@ import android.widget.AdapterView.OnItemSelectedListener;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Torstein S. Skulbru <serrghi>
- * @version 1.0
  * @see <a href="http://code.google.com/p/helladroid
  */
 public class HellaDroid extends Activity {
 	private final int EMPTY_SETTINGS = 0;
-	private final int QUIT_PROGRAM = 1;
 	private final int ADD_NEWZBIN_ID = 2;
 	private final int ABOUT_DIALOG = 3;
 	private final int SEARCH_DIALOG = 4;
@@ -86,7 +80,7 @@ public class HellaDroid extends Activity {
 	private static ArrayList<String> queueRows = new ArrayList<String>();
 	public static boolean paused = false;
 	private final Handler handler = new Handler();
-	HashMap<String,String> searchCatnHd = new HashMap<String,String>();
+	public static HashMap<String,String> searchCatnHd = new HashMap<String,String>();
 
 	private Timer t;
 	private ListView listview;
@@ -98,9 +92,9 @@ public class HellaDroid extends Activity {
 	 */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		// Tracking info
 		tracker = GoogleAnalyticsTracker.getInstance();
@@ -133,12 +127,14 @@ public class HellaDroid extends Activity {
 		// Quality
 		searchCatnHd.put("Any", "");
 		searchCatnHd.put("XviD", "attr:VideoF~xvid ");
+		searchCatnHd.put("HD", "attr:VideoF~x264 ");
 		searchCatnHd.put("720p", "attr:VideoF~720p ");
 		searchCatnHd.put("1080p", "attr:VideoF~1080p ");
 		
 		checkForLife();
 		autoQueueRefresh();
 	}
+
 
 	/**
 	 * When activity pauses, also pause the autoQueueRefresh
@@ -162,7 +158,8 @@ public class HellaDroid extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		tracker.stop();
-		this.finish();
+//		Uncomment next line to kill when orientation changes
+//		this.finish();
 	}
 
 	/**
@@ -211,9 +208,6 @@ public class HellaDroid extends Activity {
 			return true;
 		case R.id.menuAbout:
 			showDialog(ABOUT_DIALOG);
-			return true;
-		case R.id.menuQuit:
-			showDialog(QUIT_PROGRAM);
 			return true;
 		} return false;
 	}
@@ -302,21 +296,6 @@ public class HellaDroid extends Activity {
 			});
 			alert = builder.create();
 			return alert;
-		case QUIT_PROGRAM:
-			builder.setTitle("Quit?")
-			.setMessage("Are you sure you want to quit?")
-			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					onDestroy();
-				}
-			})
-			.setNegativeButton("Wops", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					return;
-				}
-			});
-			alert = builder.create();
-			return alert;
 		case ABOUT_DIALOG:
 			tracker.trackPageView("/hellaAbout");
 			builder.setTitle("About");
@@ -328,9 +307,9 @@ public class HellaDroid extends Activity {
 		case SEARCH_DIALOG:
 			tracker.trackPageView("/hellaSearch");
 			final View searchDialog = getLayoutInflater().inflate(R.layout.searchdialog, null);
-			builder.setTitle("Search NewzBin")
-			.setMessage("Please enter your search")
-			.setView(searchDialog)
+//			builder.setTitle("Search NewzBin")
+//			builder.setMessage("Please enter your search")
+			builder.setView(searchDialog)
 			.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					try {

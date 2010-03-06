@@ -22,8 +22,9 @@
 	<string name="options_menu_RefreshQueue">Refresh</string>
 	<string name="options_menu_Preferences">Preferences</string>
 	<string name="options_menu_Search">Search</string>
+	<string name="options_menu_Search_Next">Next</string>
 	<string name="options_menu_About">About</string>
-	<string name="options_menu_Quit">Quit</string>
+	<string name="options_menu_Download">Download</string>
 	
 	<string name="context_DownloadNow">Download Now</string>
 	<string name="context_DownloadNext">Download Next</string>
@@ -40,4 +41,14 @@
 	
 	<string name="search_category_prompt">Choose category</string>
 	<string name="search_quality_prompt">Choose quality</string>
+	
+	<string name="detailedTitleLabel">Title:</string>
+	<string name="detailedStatusLabel">Status:</string>
+	<string name="detailedProgressLabel">Progress:</string>
+	<string name="detailedUrlLabel">More info:</string>
+	<string name="detailedPosterLabel">Poster:</string>
+	<string name="detailedReportedLabel">Reported:</string>
+	<string name="detailedSizeLabel">Size:</string>
+	<string name="detailedNewsgroupsLabel">Newsgroups:</string>
+	<string name="detailedAttributesLabel">Attributes:</string>
 </resources>

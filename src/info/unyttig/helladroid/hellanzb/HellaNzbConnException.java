@@ -22,7 +22,6 @@ package info.unyttig.helladroid.hellanzb;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Torstein S. Skulbru <serrghi>
- * @version 1.0
  * @see <a href="http://code.google.com/p/helladroid
  */
 public class HellaNzbConnException extends Exception {

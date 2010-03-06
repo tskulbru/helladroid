@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="info.unyttig.helladroid"
-      android:versionCode="4"
-      android:versionName="1.1.0">
+      android:versionCode="7"
+      android:versionName="1.1.5">
     <application android:icon="@drawable/icon"
     			 android:label="@string/app_name" 
     			 android:description="@string/description">
         <activity android:name=".HellaDroid"
-                  android:label="@string/app_name"
-                  android:configChanges="keyboardHidden|orientation">
+                  android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -17,6 +16,8 @@
 
     <activity android:name=".activity.SettingsActivity"></activity>
 <activity android:name=".activity.NewzBinSearchActivity"></activity>
+<meta-data android:value="a14b8d104401e4a" android:name="ADMOB_PUBLISHER_ID" />
+<activity android:name=".activity.NewzBinDetailedSearch"></activity>
 </application>
     <uses-sdk android:minSdkVersion="4"
     		  android:maxSdkVersion="7" 

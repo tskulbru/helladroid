@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:text="Cougar Town - 1x15 - When a kid goes bad"
+        android:text="Some Show - 1x01 - Shome show title"
         android:paddingLeft="2px"
         android:maxLines="1"
     	/>
@@ -23,7 +23,7 @@
 	        android:layout_height="wrap_content"
 	        android:textSize="12sp"
 	        android:textColor="#6a6a6a"
-	        android:text="ID: 5524626"
+	        android:text="ID: 9999999"
 	        />
 	    <TextView
 	        android:id="@+id/searchRowLabelNzbSize"
