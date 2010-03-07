@@ -6,7 +6,7 @@ import info.unyttig.helladroid.R;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashMap;
 
 import org.xmlrpc.android.XMLRPCClient;
 import org.xmlrpc.android.XMLRPCException;
@@ -14,6 +14,7 @@ import org.xmlrpc.android.XMLRPCException;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 /**
  * This file is a part of HellaDroid
@@ -50,7 +51,7 @@ public final class HellaNZBController {
 	public static boolean pendingQuery = false;
 	private static URI uri;
 	private static XMLRPCClient client;
-	private static Map<String,Object> obj;
+	private static HashMap<String,Object> obj;
 
 	/**
 	 * Query a Pause or Continue request to HellaNZB
@@ -66,7 +67,7 @@ public final class HellaNZBController {
 				Thread thread = new Thread() {
 					public void run() {
 						try {
-							obj = (Map<String, Object>) makeApiCall("status");
+							obj = (HashMap<String, Object>) makeApiCall("status");
 							String is_paused = obj.get("is_paused").toString();
 							if(is_paused == "true")
 								isPaused = true;
@@ -104,9 +105,9 @@ public final class HellaNZBController {
 		if(isAlive) {
 
 			try {
-				obj = (Map<String, Object>) makeApiCall("status");
+				obj = (HashMap<String, Object>) makeApiCall("status");
 				Object[] tt = (Object[]) obj.get("currently_downloading");
-				Map<String,Object> obj2 = (Map<String, Object>) tt[0];
+				HashMap<String,Object> obj2 = (HashMap<String, Object>) tt[0];
 				String eta = convertEta((Integer) obj.get("eta"));
 
 				String currNzbItem = obj2.get("nzbName").toString() + "#" +
@@ -160,13 +161,19 @@ public final class HellaNZBController {
 							Object[] tt = (Object[]) obj.get("queued");
 							// Test to see if the queue is empty, if it is a error will be thrown.
 							@SuppressWarnings("unused")
-							Map<String,Object> testQueue = (Map<String, Object>) tt[0];
+							HashMap<String,Object> testQueue = (HashMap<String, Object>) tt[0];
 							ArrayList<String> rows = new ArrayList<String>();
 							// List items in queue
 							for(int i = 0; i < tt.length; i++) {
-								Map<String,Object> obj2 = (Map<String, Object>) tt[i];
-								String qItem = obj2.get("nzbName").toString() + "#" + obj2.get("total_mb").toString() +
-								"#" + obj2.get("id").toString();
+								HashMap<String,Object> obj2 = (HashMap<String, Object>) tt[i];
+								Log.i("Controller: ", obj2.get("nzbName").toString());
+								String qItem = obj2.get("nzbName").toString() + "#";
+								if(obj2.containsKey("total_mb"))
+									qItem += obj2.get("total_mb").toString();
+								else
+									qItem += "0";
+								qItem += "#" + obj2.get("id").toString();
+								Log.i("Controller: ", qItem);
 								rows.add(qItem);
 							}
 							Object[] result = new Object[2];
@@ -180,6 +187,7 @@ public final class HellaNZBController {
 							message.sendToTarget();
 
 						} catch(Exception e) { 
+							Log.e("Controller", "exception", e);
 							// Used for debugging: callBackUpdateStatus(messageHandler, e.getMessage());
 							// Queue is empty, so empty it.
 							ArrayList<String> rows = new ArrayList<String>();
