@@ -73,7 +73,7 @@ public class HellaDroid extends Activity {
 	private final int SEARCH_DIALOG = 4;
 	private final int CANCEL_ITEM = 99;
 
-	// TODO: Let users choose the time intervall
+	// TODO: Let users choose the time intervall.
 	private final int REFRESH_INTERVALL = 10000;
 
 	public static SharedPreferences preferences;
