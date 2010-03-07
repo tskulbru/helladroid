@@ -64,7 +64,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Torstein S. Skulbru <serrghi>
- * @see <a href="http://code.google.com/p/helladroid
+ * @see <a href="http://code.google.com/p/helladroid 
  */
 public class HellaDroid extends Activity {
 	private final int EMPTY_SETTINGS = 0;

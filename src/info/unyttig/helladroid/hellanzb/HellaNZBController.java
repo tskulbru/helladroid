@@ -408,7 +408,6 @@ public final class HellaNZBController {
 					preferences.getString("server_port", "8760"));
 			client = new XMLRPCClient(uri);
 			client.setBasicAuthentication("hellanzb", preferences.getString("server_password",""));
-
 			// Test connection
 			if(client.call("aolsay") != "")
 				isAlive = true;
