@@ -54,7 +54,12 @@ public class QueueNzbListRowAdapter extends ArrayAdapter<String>
 		View row = inflater.inflate(R.layout.queuenzbitem, null);
 
 		String[] values = nzbItems.get(position).split("#");
-		String nzbSizeMB = values[1] + " MB";
+		String nzbSizeMB;
+		int mb = Integer.parseInt(values[1]);
+		if(mb == 0)
+			nzbSizeMB = "unknown";
+		else
+			nzbSizeMB = values[1] + " MB";
 		
 		((TextView) row.findViewById(R.id.queueRowLabelNzbname)).setText(values[0]);
 		((TextView) row.findViewById(R.id.queueRowLabelNzbCompleted)).setText(nzbSizeMB);
