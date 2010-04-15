@@ -341,6 +341,8 @@ public final class HellaNZBController {
 
 						} finally {
 							pendingQuery = false;
+							listQueue(messageHandler);
+							callBackUpdateStatus(messageHandler, R.string.msg_nzb_removed);
 						}
 					}
 				};
@@ -367,6 +369,8 @@ public final class HellaNZBController {
 
 						} finally {
 							pendingQuery = false;
+							listQueue(messageHandler);
+							callBackUpdateStatus(messageHandler, R.string.msg_nzb_removed);
 						}
 					}
 				};
