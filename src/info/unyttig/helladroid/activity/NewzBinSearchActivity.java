@@ -258,7 +258,7 @@ public class NewzBinSearchActivity extends ListActivity {
 				DisplayRToast((Integer)msg.obj);
 				break;
 			case MSG_NOTIFY_USER_ERROR:
-				DisplayToast((String)msg.obj);
+				DisplayToast((String)msg.obj.toString());
 				break;
 			}
 		}

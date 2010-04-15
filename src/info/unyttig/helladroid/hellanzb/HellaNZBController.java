@@ -86,6 +86,7 @@ public final class HellaNZBController {
 							callBackUpdateStatus(messageHandler, e); 
 						} finally {
 							pendingQuery = false;
+							listQueue(messageHandler);
 						}
 					}
 				};
@@ -229,6 +230,7 @@ public final class HellaNZBController {
 
 						} finally {
 							pendingQuery = false;
+							callBackUpdateStatus(messageHandler, R.string.msg_enqueue_newzbin);
 						}
 					}
 				};
@@ -253,11 +255,11 @@ public final class HellaNZBController {
 					public void run() {
 						try {
 							makeApiCall("enqueueurl", nzbUrl);
-							callBackUpdateStatus(messageHandler, R.string.msg_enqueue_nzb);
 						} catch(Exception e) {
 
 						} finally {
 							pendingQuery = false;
+							callBackUpdateStatus(messageHandler, R.string.msg_enqueue_nzb);
 						}
 					}
 				};
