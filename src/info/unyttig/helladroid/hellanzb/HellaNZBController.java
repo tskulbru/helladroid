@@ -166,14 +166,12 @@ public final class HellaNZBController {
 							// List items in queue
 							for(int i = 0; i < tt.length; i++) {
 								HashMap<String,Object> obj2 = (HashMap<String, Object>) tt[i];
-								Log.i("Controller: ", obj2.get("nzbName").toString());
 								String qItem = obj2.get("nzbName").toString() + "#";
 								if(obj2.containsKey("total_mb"))
 									qItem += obj2.get("total_mb").toString();
 								else
 									qItem += "0";
 								qItem += "#" + obj2.get("id").toString();
-								Log.i("Controller: ", qItem);
 								rows.add(qItem);
 							}
 							Object[] result = new Object[2];
@@ -214,7 +212,6 @@ public final class HellaNZBController {
 	/**
 	 * Enqueue a Newzbin ID.
 	 * @see http://www.newzbin.com
-	 * TODO in the future expand this to also accept url's
 	 * 
 	 * @param messageHandler
 	 * @param nzbid
@@ -241,6 +238,35 @@ public final class HellaNZBController {
 		} else callBackUpdateStatus(messageHandler, R.string.msg_server_down);
 	}
 
+	/**
+	 * Enqueue a NZB from a URL, can be used with nzbmatrix API.
+	 * @see http://nzbmatrix.com/api-info.php
+	 * 
+	 * @param messageHandler
+	 * @param nzbid
+	 */
+	public static void enqueueUrl(final Handler messageHandler, final String nzbUrl) {
+		if(!isAlive) setupConnection();
+		if(isAlive) {
+			if(!pendingQuery) {
+				Thread thread = new Thread() {
+					public void run() {
+						try {
+							makeApiCall("enqueueurl", nzbUrl);
+							callBackUpdateStatus(messageHandler, R.string.msg_enqueue_nzb);
+						} catch(Exception e) {
+
+						} finally {
+							pendingQuery = false;
+						}
+					}
+				};
+				pendingQuery = true;
+				thread.start();
+			}
+		} else callBackUpdateStatus(messageHandler, R.string.msg_server_down);
+	}
+	
 	/**
 	 * Move a NZB in the queue to the top(forcing it to download) or bottom.
 	 * 
@@ -404,14 +430,19 @@ public final class HellaNZBController {
 	private static void setupConnection() {
 		try {
 			SharedPreferences preferences = HellaDroid.preferences;
-			uri = URI.create(preferences.getString("server_url", "") + ":" + 
-					preferences.getString("server_port", "8760"));
-			client = new XMLRPCClient(uri);
+			String prefUrl = preferences.getString("server_url", "");
+			// If the preference url contains, http:// and one or more characters
+			if(!prefUrl.matches("(https?)://.+")) 
+					prefUrl = "http://" + prefUrl;
+			
+			uri = URI.create(prefUrl + ":" + preferences.getString("server_port", "8760"));
+			client = new XMLRPCClient(uri.toURL());
 			client.setBasicAuthentication("hellanzb", preferences.getString("server_password",""));
 			// Test connection
 			if(client.call("aolsay") != "")
 				isAlive = true;
 		} catch(Exception e) {
+			Log.e("HellaDroidNZBSETUP: ", "Error", e);
 			isAlive = false;
 		}
 	}

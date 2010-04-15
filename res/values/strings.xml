@@ -33,10 +33,11 @@
 	<string name="context_MoveDown">Move Down</string>
 	<string name="context_Dequeue">Remove</string>
 	
-	<string name="msg_server_down">Server appears to be offline</string>
+	<string name="msg_server_down">Server appears to be offline, doublecheck settings</string>
 	<string name="msg_nzb_continue">Continuing download..</string>
 	<string name="msg_nzb_pause">Pausing download..</string>
 	<string name="msg_enqueue_newzbin">NewzBin ID enqueued..</string>
+	<string name="msg_enqueue_nzb">NZB enqueued..</string>
 	<string name="msg_empty_search_string">Missing search string</string>
 	
 	<string name="search_category_prompt">Choose category</string>
