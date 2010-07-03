@@ -9,8 +9,10 @@ import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import info.unyttig.helladroid.R;
 import info.unyttig.helladroid.activity.NewzBinSearchActivity;
+import info.unyttig.helladroid.activity.NzbMatrixSearchActivity;
 import info.unyttig.helladroid.activity.SettingsActivity;
 import info.unyttig.helladroid.hellanzb.HellaNZBController;
+import info.unyttig.helladroid.nzbmatrix.NzbMatrixController;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -108,7 +110,7 @@ public class HellaDroid extends Activity {
 		listview.setAdapter(new QueueNzbListRowAdapter(this, queueRows));
 		listview.setOnCreateContextMenuListener(this);
 
-		// Fill the newzbin categories (0(1) so no worries)
+		// Fill the newzbin categories (O(1) so no worries)
 		searchCatnHd.put("Everything", "-1");
 		searchCatnHd.put("Anime", "11");
 		searchCatnHd.put("Apps", "1");
@@ -316,12 +318,24 @@ public class HellaDroid extends Activity {
 						EditText et = (EditText) searchDialog.findViewById(R.id.searchString);
 						Spinner s = (Spinner) searchDialog.findViewById(R.id.searchCatgegorySpinner);
 						Spinner s2 = (Spinner) searchDialog.findViewById(R.id.searchQualitySpinner);
+						Spinner s3 = (Spinner) searchDialog.findViewById(R.id.searchProvSpinner);
+						
 						if(et.getText().length() <= 0) {
 							DisplayRToast(R.string.msg_empty_search_string);
 							return;
 						}
-						String ss = searchCatnHd.get(s2.getSelectedItem().toString()) + et.getText().toString();
-						showSearchActivity(ss, searchCatnHd.get(s.getSelectedItem().toString()));
+						if(s3.getSelectedItem().toString().equals("NewzBin")) {
+							String ss = searchCatnHd.get(s2.getSelectedItem().toString()) + et.getText().toString();
+							showSearchActivity(ss, searchCatnHd.get(s.getSelectedItem().toString()), "NewzBin");
+						} else {
+							String temp = "" + et.getText();
+							temp = temp.replaceAll("^[ \t]+|[ \t]+$", "");
+							if(temp.length() <= 0) {
+								DisplayRToast(R.string.msg_empty_search_string);
+								return;
+							} else 
+								showSearchActivity(et.getText().toString(), "0", "NzbMatrix");
+						}
 						Log.i("SearchString: ", et.getText().toString());
 						Log.i("SearchCategory: ", s.getSelectedItem().toString());
 					} catch(Exception e) {
@@ -384,11 +398,18 @@ public class HellaDroid extends Activity {
 	 * @param searchString
 	 * @param categoryNr
 	 */
-	private void showSearchActivity(String searchString, String categoryNr) {
-		Intent searchIntent = new Intent(this, NewzBinSearchActivity.class);
-		searchIntent.putExtra("searchString", searchString);
-		searchIntent.putExtra("categoryNr", categoryNr);
-		startActivity(searchIntent);
+	private void showSearchActivity(String searchString, String categoryNr, String provider) {
+		if(provider.equals("NewzBin")) {
+			Intent searchIntent = new Intent(this, NewzBinSearchActivity.class);
+			searchIntent.putExtra("searchString", searchString);
+			searchIntent.putExtra("categoryNr", categoryNr);
+			startActivity(searchIntent);
+		} else {
+			Intent searchIntent = new Intent(this, NzbMatrixSearchActivity.class);
+			searchIntent.putExtra("searchString", searchString);
+			searchIntent.putExtra("categoryNr", categoryNr);
+			startActivity(searchIntent);
+		}
 	}
 
 	/**

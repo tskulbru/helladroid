@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory android:title="Server Settings" >
+	<PreferenceCategory android:title="HellaNZB Settings" >
 		<EditTextPreference 
 			android:key="server_url" 
 			android:title="Server URL" 
@@ -29,6 +29,38 @@
         	android:defaultValue="false"
         	/>
 	</PreferenceCategory>
+	<PreferenceCategory android:title="NzbMatrix Settings">
+		<EditTextPreference 
+			android:key="nzbmatrix_username" 
+			android:title="NzbMatrix Username" 
+			android:summary="@string/setting_nzbmatrix_username"
+			android:dependency="server_active"
+			/>
+		<EditTextPreference 
+			android:key="nzbmatrix_apikey" 
+			android:title="NzbMatrix API Key" 
+			android:summary="@string/setting_nzbmatrix_apikey"
+			android:dependency="nzbmatrix_username"
+			/>
+		<ListPreference
+			android:key="nzbmatrix_retention"
+			android:title="Retention"
+			android:summary="@string/setting_retention"
+			android:dependency="nzbmatrix_apikey"
+			android:entries="@array/searchRetention"
+			android:entryValues="@array/searchRetention"
+			android:defaultValue="7"
+			/>
+		<ListPreference
+			android:key="nzbmatrix_search_limit"
+			android:title="Result Limit"
+			android:summary="@string/setting_search_limit"
+			android:dependency="nzbmatrix_apikey"
+			android:entries="@array/searchLimits"
+			android:entryValues="@array/searchLimits"
+			android:defaultValue="10"
+			/>
+	</PreferenceCategory>
 	<PreferenceCategory android:title="NewzBin Settings">
 		<EditTextPreference 
 			android:key="newzbin_username" 
@@ -46,7 +78,7 @@
 		<ListPreference
 			android:key="newzbin_retention"
 			android:title="NewzBin Retention"
-			android:summary="@string/setting_newzbin_retention"
+			android:summary="@string/setting_retention"
 			android:dependency="newzbin_password"
 			android:entries="@array/searchRetention"
 			android:entryValues="@array/searchRetention"
@@ -55,7 +87,7 @@
 		<ListPreference
 			android:key="newzbin_search_limit"
 			android:title="Result Limit"
-			android:summary="@string/setting_newzbin_limit"
+			android:summary="@string/setting_search_limit"
 			android:dependency="newzbin_password"
 			android:entries="@array/searchLimits"
 			android:entryValues="@array/searchLimits"

@@ -29,10 +29,15 @@
 		<item>200</item>
 		<item>365</item>
 		<item>600</item>
+		<item>1000</item>
 	</string-array>
 	<string-array name="searchLimits">
 		<item>10</item>
 		<item>20</item>
 		<item>30</item>
+	</string-array>
+	<string-array name="searchProv">
+		<item>NewzBin</item>
+		<item>NzbMatrix</item>
 	</string-array>
 </resources>

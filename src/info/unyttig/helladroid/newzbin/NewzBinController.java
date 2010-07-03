@@ -199,7 +199,7 @@ public class NewzBinController {
 	 * @param messageHandler
 	 * @param txt
 	 */
-	public static void sendUserMsg(final Handler messageHandler, final String txt) {
+	private static void sendUserMsg(final Handler messageHandler, final String txt) {
 		Message msg = new Message();
 		msg.setTarget(messageHandler);
 		msg.what = MSG_NOTIFY_USER_ERROR;
@@ -208,7 +208,7 @@ public class NewzBinController {
 	}
 	
 	/**
-	 * Sends HTTP POST requests to a Newzbin with given parameters. 
+	 * Sends HTTP POST requests to Newzbin with given parameters. 
 	 * 
 	 * @param url Type:String - The url to connect to
 	 * @param kvPairs Type:Map - The map of parameters to post

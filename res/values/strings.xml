@@ -14,8 +14,10 @@
 	<string name="setting_server_password_default">changeme</string>
 	<string name="setting_newzbin_username">NewzBin login username</string>
 	<string name="setting_newzbin_password">NewzBin login password</string>
-	<string name="setting_newzbin_retention">Your usenet providers retention (def: 7 days)</string>
-	<string name="setting_newzbin_limit">Number of search results shown (def: 10)</string>
+	<string name="setting_nzbmatrix_username">NzbMatrix login username</string>
+	<string name="setting_nzbmatrix_apikey">NzbMatrix API Key</string>
+	<string name="setting_retention">Your usenet providers retention (def: 7 days)</string>
+	<string name="setting_search_limit">Number of search results shown (def: 10)</string>
 	
 	<string name="options_menu_AddNzbID">Add NZB</string>
 	<string name="options_menu_Pause">Continue/Pause</string>
@@ -43,6 +45,7 @@
 	
 	<string name="search_category_prompt">Choose category</string>
 	<string name="search_quality_prompt">Choose quality</string>
+	<string name="search_provider_prompt">Choose provider</string>
 	
 	<string name="detailedTitleLabel">Title:</string>
 	<string name="detailedStatusLabel">Status:</string>
