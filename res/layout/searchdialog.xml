@@ -10,12 +10,28 @@
 		android:layout_height="wrap_content" 
 		android:singleLine="true"
 		/>
+	<Spinner
+		android:id="@+id/searchProvSpinner"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:prompt="@string/search_provider_prompt"
+		android:entries="@array/searchProv" 
+		/>
+	<Spinner 
+		android:id="@+id/searchCatgegoryMatrixSpinner" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:prompt="@string/search_category_prompt"
+		android:entries="@array/searchCategoryNzbMatrix"
+		android:visibility="gone"
+		/>
 	<Spinner 
 		android:id="@+id/searchCatgegorySpinner" 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content" 
 		android:prompt="@string/search_category_prompt"
 		android:entries="@array/searchCategoryTypes"
+		android:visibility="gone"
 		/>
 	<Spinner
 		android:id="@+id/searchQualitySpinner"
@@ -23,12 +39,6 @@
 		android:layout_height="wrap_content"
 		android:prompt="@string/search_quality_prompt"
 		android:entries="@array/searchQuality"
-		/>
-	<Spinner
-		android:id="@+id/searchProvSpinner"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:prompt="@string/search_provider_prompt"
-		android:entries="@array/searchProv"
+		android:visibility="gone"
 		/>
 </LinearLayout>

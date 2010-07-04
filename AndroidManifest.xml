@@ -19,6 +19,7 @@
 <meta-data android:value="a14b8d104401e4a" android:name="ADMOB_PUBLISHER_ID" />
 <activity android:name=".activity.NewzBinDetailedSearch"></activity>
 <activity android:name=".activity.NzbMatrixSearchActivity"></activity>
+<activity android:name=".activity.NzbMatrixDetailedSearch"></activity>
 </application>
     <uses-sdk android:minSdkVersion="4"
     		  android:maxSdkVersion="7" 

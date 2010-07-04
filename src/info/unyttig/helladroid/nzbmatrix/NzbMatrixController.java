@@ -2,21 +2,40 @@ package info.unyttig.helladroid.nzbmatrix;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Hashtable;
-
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import info.unyttig.helladroid.HellaDroid;
+
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+/**
+ * This file is a part of HellaDroid
+ * 
+ * HellaDroid - http://code.google.com/p/helladroid
+ * "A remote HellaNZB query client."
+ * 
+ * Copyright (C) 2010 Torstein S. Skulbru <serrghi>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author Torstein S. Skulbru <serrghi>
+ * @see <a href="http://code.google.com/p/helladroid
+ */
 public class NzbMatrixController {
 	private final static int MSG_NOTIFY_USER_ERROR = 2;
 	private final static String LOG_NAME = "<HellaDroid> NzbMatrixController: ";
@@ -31,9 +50,14 @@ public class NzbMatrixController {
 	
 	
 	/**
-	 * api-nzb-search.php?search={SEARCH TERM}&catid={CATEGORYID}&num={MAX RESULTS}&username={USERNAME}&apikey={APIKEY}
+	 * Searches NzbMatrix.com based on a search string and a category id, 
+	 * returns error message if needed, else it returns a list of report objects 
+	 * which are to be shown in the activity
+	 * 
+	 * @param messageHandler
 	 * @param searchStr
 	 * @param catId
+	 * @return ArrayList<NzbMatrixReport>|reports A list of search result objects
 	 */
 	public static ArrayList<NzbMatrixReport> searchNzbMatrix(final Handler messageHandler, String searchStr, String catId) {
 		reports.clear();
@@ -44,16 +68,17 @@ public class NzbMatrixController {
 			return parseData(data);
 		} catch(NzbMatrixException e) {
 			Log.e(LOG_NAME, "NzbMatrix query error: " + e.toString());
-			sendUserMsg(messageHandler, e.getMessage());
+			sendUserMsg(messageHandler, genErrorString(e.getMessage()));
 		} catch(Exception e) {
 			Log.e(LOG_NAME, e.toString());
+			sendUserMsg(messageHandler, "Site might be down, try again later");
 		} return reports;
 	}
 	
 	/**
 	 * Sends HTTP request to NzbMatrix with given parameters
 	 * @param sUrl
-	 * @return
+	 * @return String[]|data Array of unparsed report results
 	 */
 	private static String[] doPost(String sUrl) {
 		String[] data = null;
@@ -89,7 +114,6 @@ public class NzbMatrixController {
 		// TODO: This solution sucks big time and is ugly, find a better and prettier one.
 		for(int i = 0; i < input.length; i++) {
 			String data = input[i];
-			BufferedReader br = new BufferedReader(new StringReader(data));
 			
 			int nzbidpos = data.indexOf("NZBID:");
 			int nzbnamepos = data.indexOf("NZBNAME:");
@@ -131,10 +155,55 @@ public class NzbMatrixController {
 		return reports;
 	}
 
+	/**
+	 * Generate a proper url string for HellaNZB to download
+	 * 
+	 * @param nzbId
+	 * @return String 
+	 */
 	public static String genDownloadString(int nzbId) {
 		return String.format(APIURL + "api-nzb-download.php?id=%d&username=%s&apikey=%s", 
 				nzbId, nzbMatrixUsername, nzbMatrixApiKey);
 	}
+
+	/**
+	 * Generates readable error messages based on the exception message
+	 * 
+	 * @param errorExMsg
+	 * @return String
+	 */
+	private static String genErrorString(String errorExMsg) {
+		if(errorExMsg.equals("invalid_login"))
+				return "There is a problem with the username you have provided.";
+		else if(errorExMsg.equals("invalid_api"))
+				return "There is a problem with the API Key you have provided.";
+		else if(errorExMsg.equals("invalid_nzbid"))
+				return "There is a problem with the NZBid supplied.";
+		else if(errorExMsg.equals("vip_only"))
+				return "You need to be VIP or higher to access.";
+		else if(errorExMsg.equals("disabled_account"))
+				return "User Account Disabled.";
+		else if(errorExMsg.equals("no_nzb_found"))
+				return "No NZB found.";
+		else if(errorExMsg.equals("no_search"))
+				return "No search query.";
+		else if(errorExMsg.equals("please_wait_30"))
+				return "Please wait 30 seconds before retry.";
+		else if(errorExMsg.equals("nothing_found"))
+				return "No Results Found.";
+		// Havent seen this error message yet, so no idea what x is supposed to be so just check if it contains it.
+		else if(errorExMsg.contains("_daily_limit"))
+				return "You have reached the daily download limit";
+		return errorExMsg;
+	}
+	
+	/**
+	 * Send back a update status message to the message handler.
+	 * This is used for short messages to the user, like "Search had no result" etc.
+	 * 
+	 * @param messageHandler
+	 * @param txt
+	 */
 	private static void sendUserMsg(final Handler messageHandler, final String txt) {
 		Message msg = new Message();
 		msg.setTarget(messageHandler);
@@ -142,184 +211,4 @@ public class NzbMatrixController {
 		msg.obj = txt;
 		msg.sendToTarget();
 	}
-	/**
-	 * We are introducing an API (Application Programming Interface) for NZBMatrix.
-
-To access the API you will need an API Key for your account. This can be found in "Your Account", and you must be a VIP member to use it.
-
-The API is intended for use by application authors and developers that require an interface into NZBMatrix.
-
-Any abuse may impose an API ban, or further restrictions. Not for Commercial use.
-
-API KEY INFORMATION:
-
-Generating your own unique API Key is very simple, simply visit "Your Account" and click [Generate New API Key]. A API Key will then be generated and displayed in the API area under Current API Key:
-
-Your unique API Key is locked to your username, no one else will have access to it. If for some reason you think its been used elsewhere, stolen, lost or you just want it changed then simply generate a new key. Generating a new API Key will render the old one useless.
-
-The API key is a 32 character string containing letters and numbers only. It is an algorithm of several aspects of your account details and random generated keys. It is impossible to replicate.
-
-
-DIRECT DOWNLOAD API:
-
-Put simple, using the Direct Download API will save you having to visit the site. No HTML output is generated and the NZB is sent directly to your software/browser etc.
-
-Currently you can only request complete nzb posts, partial nzb postings are not supported.
-
-Usage:
-To use the Direct Download API please use the following syntax:
-
-http://nzbmatrix.com/api-nzb-download.php?id={NZBID}&username={USERNAME}&apikey={APIKEY}
-
-eg: http://nzbmatrix.com/api-nzb-download.php?id=123456&username=foobar&apikey=838d43ef5cb5346d83520f6886adf935
-
-
-Breakdown:
-http://nzbmatrix.com/api-nzb-download.php? = URL to use. No other URL is supported, please do not try to use them.
-id={NZBID} = NZBid from NZBMatrix.com
-&username={USERNAME} = Your account username.
-&apikey={APIKEY} = Your API Key.
-&scenename=1 = Optional, this will restore scene names
-
-Output Results:
-If your request was successful the NZB you requested will be sent.
-
-If there was a problem with your request the following will be output:
-error:invalid_login = There is a problem with the username you have provided.
-error:invalid_api = There is a problem with the API Key you have provided.
-error:invalid_nzbid = There is a problem with the NZBid supplied.
-error:please_wait_x = Please wait x seconds before retry.
-error:vip_only = You need to be VIP or higher to access.
-error:disabled_account = User Account Disabled.
-error:x_daily_limit = You have reached the daily download limit of x.
-error:no_nzb_found = No NZB found.
-
-Notes:
-All NZB posts downloaded with the API will count towards your daily download limits.
-Only full posts can be retrieved, there is no support for partial posts.
-You are limited to 6 NZBs per 60 seconds.
-Only one post can be downloaded per request.
-SSL is supported, please use https://nzbmatrix.com instead.
-All output is sent using GZip Compression.
-
-
-NZB POST DETAILS API:
-
-This API will display various details of an NZB posting
-
-Usage:
-To use the NZB DETAILS API please use the following syntax:
-
-http://nzbmatrix.com/api-nzb-details.php?id={NZBID}&username={USERNAME}&apikey={APIKEY}
-
-eg: http://nzbmatrix.com/api-nzb-details.php?id=123456&username=foobar&apikey=838d43ef5cb5346d83520f6886adf935
-
-
-Breakdown:
-http://nzbmatrix.com/api-nzb-details.php? = URL to use. No other URL is supported, please do not try to use them.
-id={NZBID} = NZBid from NZBMatrix.com
-&username={USERNAME} = Your account username.
-&apikey={APIKEY} = Your API Key.
-
-Output Results:
-Sample output is as follows, {FIELD}:{VALUE};
-NZBNAME:mandriva linux 2009; = NZB Name On Site
-INDEX_DATE:2009-02-14 09:08:55; = Indexed By Site (Date/Time GMT)
-USENET_DATE:2009-02-12 2:48:47; = Posted To Usenet (Date/Time GMT)
-GROUP:alt.binaries.linux; = Usenet Newsgroup
-PARTS:5702; = Number Of Parts
-SIZE:1469988208.64; = Size in bytes
-USENET_SUBJECT:[mandriva linux 2009] - "mandriva linux 2009.part03.rar" yEnc (1/201); = Usenet Post Subject
-COMMENTS:0; = Number Of Comments Posted
-HITS:174; = Number Of Hits (Views)
-NFO:yes; = NFO Present
-LINK:http://linux.org; = HTTP Link To Attached Website
-CATEGORY:Apps > PC; = Our Site Category
-LANGUAGE:English; = Language Attached From Our Index
-IMAGE:http://linux.org/logo.gif; = HTTP Link To Attached Image
-REGION:FREE; = Region Info
-
-If there was a problem with your request the following will be output:
-error:invalid_login = There is a problem with the username you have provided.
-error:invalid_api = There is a problem with the API Key you have provided.
-error:invalid_nzbid = There is a problem with the NZBid supplied.
-error:vip_only = You need to be VIP or higher to access.
-error:disabled_account = User Account Disabled.
-error:no_nzb_found = No NZB found.
-
-Notes:
-Only one post can be downloaded per request.
-SSL is supported, please use https://nzbmatrix.com instead.
-All output is sent using GZip Compression.
-
-
-NZB SEARCH API:
-
-This API will perform a NZB Post search and return a maximum of 15 results
-
-Usage:
-To use the NZB SEARCH API please use the following syntax:
-
-http://nzbmatrix.com/api-nzb-search.php?search={SEARCH TERM}&catid={CATEGORYID}&num={MAX RESULTS}&username={USERNAME}&apikey={APIKEY}
-
-eg: http://nzbmatrix.com/api-nzb-search.php?search=linux&catid=11&num=1&username=foobar&apikey=838d43ef5cb5346d83520f6886adf935
-
-
-Breakdown:
-http://nzbmatrix.com/api-nzb-search.php? = URL to use. No other URL is supported, please do not try to use them.
-search={SEARCH TERM} = Search Term
-&catid={CATEGORYID} = OPTIONAL, if left blank all categories are searched, category ID used from site.
-&num={MAX RESULTS} = OPTIONAL, if left blank a maximum of 5 results will display, 5 is the maximum number of results that can be produced.
-&age={MAX AGE} = OPTIONAL, if left blank full site retention will be used. Age must be number of "days" eg 200
-&region={SEE DESC} = OPTIONAL, if left blank results will not be limited 1 = PAL, 2 = NTSC, 3 = FREE
-&group={SEE DESC} = OPTIONAL, if left blank all groups will be searched, format is full group name "alt.binaries.X"
-&username={USERNAME} = Your account username.
-&apikey={APIKEY} = Your API Key.
-&larger={MIN SIZE} = OPTIONAL, minimum size in MB
-&smaller={MAX SIZE} = OPTIONAL, maximum size in MB
-&minhits={MIN HITS} = OPTIONAL, minimum hits
-&maxhits={MAX HITS} = OPTIONAL, maximum hits
-&maxage={MAX AGE} = OPTIONAL, same as &age (above) here for matching site search vars only
-&englishonly=1{ENGLISH ONLY} = OPTIONAL, if added the search will only return ENGLISH and UNKNOWN matches
-&searchin={SEARCH FIELD} = OPTIONAL, (name, subject, weblink) if left blank or not used then search filed is "name"
-
-Output Results:
-Sample output is as follows, {FIELD}:{VALUE};
-NZBID:444027; = NZB ID On Site
-NZBNAME:mandriva linux 2009; = NZB Name On Site
-LINK:nzbmatrix.com/nzb-details.php?id=444027&hit=1; = Link To NZB Details PAge
-SIZE:1469988208.64; = Size in bytes
-INDEX_DATE:2009-02-14 09:08:55; = Indexed By Site (Date/Time GMT)
-USENET_DATE:2009-02-12 2:48:47; = Posted To Usenet (Date/Time GMT)
-CATEGORY:TV > Divx/Xvid; = NZB Post Category
-GROUP:alt.binaries.linux; = Usenet Newsgroup
-COMMENTS:0; = Number Of Comments Posted
-HITS:174; = Number Of Hits (Views)
-NFO:yes; = NFO Present
-WEBLINK:http://linux.org; = HTTP Link To Attached Website
-LANGUAGE:English; = Language Attached From Our Index
-IMAGE:http://linux.org/logo.gif; = HTTP Link To Attached Image
-REGION:0; = Region Coding (See notes)
-
-If there was a problem with your request the following will be output:
-error:invalid_login = There is a problem with the username you have provided.
-error:invalid_api = There is a problem with the API Key you have provided.
-error:invalid_nzbid = There is a problem with the NZBid supplied.
-error:vip_only = You need to be VIP or higher to access.
-error:disabled_account = User Account Disabled.
-error:no_nzb_found = No NZB found.
-error:no_search = No search query.
-error:please_wait_x = Please wait x seconds before retry.
-error:nothing_found = No Results Found.
-
-Notes:
-A maximum of 15 results only.
-&num=x OPTIONAL (Default 15).
-&catid=x OPTIONAL (Default All).
-You are limited to 1 search per 10 seconds.
-Region Coding 0 = Unknown, 1 = PAL, 2 = NTSC, 3 = FREE
-| Character will seperate search results
-SSL is supported, please use https://nzbmatrix.com instead.
-All output is sent using GZip Compression.
-	 */
 }

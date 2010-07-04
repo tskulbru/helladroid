@@ -3,9 +3,6 @@ package info.unyttig.helladroid.activity;
 import info.unyttig.helladroid.HellaDroid;
 import info.unyttig.helladroid.R;
 import info.unyttig.helladroid.hellanzb.HellaNZBController;
-import info.unyttig.helladroid.newzbin.NewzBinController;
-import info.unyttig.helladroid.newzbin.NewzBinReport;
-import info.unyttig.helladroid.newzbin.NewzBinSearchAdapter;
 import info.unyttig.helladroid.nzbmatrix.NzbMatrixController;
 import info.unyttig.helladroid.nzbmatrix.NzbMatrixReport;
 import info.unyttig.helladroid.nzbmatrix.NzbMatrixSearchAdapter;
@@ -13,18 +10,18 @@ import info.unyttig.helladroid.nzbmatrix.NzbMatrixSearchAdapter;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
-import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
@@ -32,14 +29,8 @@ public class NzbMatrixSearchActivity extends ListActivity {
 	private final static SharedPreferences preferences = HellaDroid.preferences;
 	private final static int MSG_NEW_STATUS_UPDATE = 1;
 	private final int MSG_NOTIFY_USER_ERROR = 2;
-	private final int SHOW_LOADING_DIALOG = 3;
-	private final int SHOW_SEARCH_DIALOG = 4;
 	
-	private ProgressDialog dialog;
 	private ArrayList<NzbMatrixReport> searchRes;
-	private int searchItemsLeft = NzbMatrixController.totalRes;
-	private final int LIMIT = Integer.parseInt(preferences.getString("newzbin_search_limit", ""));
-	private int offset = 0;
 	private String searchString;
 	private String categoryNr;
 	
@@ -54,11 +45,21 @@ public class NzbMatrixSearchActivity extends ListActivity {
 		searchString = extras.getString("searchString");
 		categoryNr = extras.getString("categoryNr");
 		searchRes = searchNzbMatrix(searchString, categoryNr);
-		searchItemsLeft = NzbMatrixController.totalRes;
-		searchItemsLeft -= LIMIT;
 
 		this.setListAdapter(new NzbMatrixSearchAdapter(this, searchRes));
 		this.registerForContextMenu(this.getListView());
+	}
+	
+	/**
+	 * Creates a new intent when the individual list item is clicked
+	 * which represents more info about the selected newzbin id
+	 */
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		NzbMatrixReport report = (NzbMatrixReport) this.getListAdapter().getItem(position);
+		Intent detailedSearch = new Intent(this, NzbMatrixDetailedSearch.class);
+		detailedSearch.putExtra("info.unyttig.helladroid.nzbmatrix.NzbMatrixReport", report);
+		startActivity(detailedSearch);
 	}
 	
 	/**
@@ -80,16 +81,19 @@ public class NzbMatrixSearchActivity extends ListActivity {
 		switch(item.getItemId()) {
 		case R.id.searchItemDownloadNow:
 			NzbMatrixReport report = (NzbMatrixReport) this.getListAdapter().getItem((int)info.id);
-//			Log.i("asdasda", NzbMatrixController.genDownloadString(report.getNzbId()));
 			HellaNZBController.enqueueUrl(messageHandler, NzbMatrixController.genDownloadString(report.getNzbId()));
-//			HellaNZBController.enqueueUrl(messageHandler, ""+report.getNzbId());
 			return true;
 		} return false;
 	}
 	
+	/**
+	 * Search NzbMatrix with a gives string and category
+	 * 
+	 * @param searchStr
+	 * @param catId
+	 * @return
+	 */
 	private ArrayList<NzbMatrixReport> searchNzbMatrix(String searchStr, String catId) {
-		searchItemsLeft -= LIMIT;
-		this.offset += LIMIT;
 		return NzbMatrixController.searchNzbMatrix(messageHandler, searchStr, catId);
 		
 	}

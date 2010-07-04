@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string-array name="searchProv">
+		<item>NewzBin</item>
+		<item>NzbMatrix</item>
+	</string-array>
+	<string-array name="searchCategoryNzbMatrix">
+		<item>Everything</item>
+		<item>Movies: DVD</item>
+		<item>Movies: DivX/XviD</item>
+		<item>Movies: BRRip</item>
+		<item>Movies: x264</item>
+		<item>TV: DVD</item>
+		<item>TV: DivX/XviD</item>
+		<item>TV: HD</item>
+		<item>TV: Sport/Ent</item>
+		<item>TV: Other</item>
+		<item>Documentaries: STD</item>
+		<item>Documentaries: HD</item>
+	</string-array>
 	<string-array name="searchCategoryTypes">
 		<item>Everything</item>
 		<item>Anime</item>
@@ -36,8 +54,9 @@
 		<item>20</item>
 		<item>30</item>
 	</string-array>
-	<string-array name="searchProv">
-		<item>NewzBin</item>
-		<item>NzbMatrix</item>
+	<string-array name="searchLimitsMatrix">
+		<item>5</item>
+		<item>10</item>
+		<item>15</item>
 	</string-array>
 </resources>

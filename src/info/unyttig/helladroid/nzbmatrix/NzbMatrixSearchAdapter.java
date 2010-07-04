@@ -36,5 +36,4 @@ public class NzbMatrixSearchAdapter extends ArrayAdapter<NzbMatrixReport> {
 		((TextView) row.findViewById(R.id.searchRowLabelNzbSize)).setText(temp.getSize());
 		return (row);
 	}
-
 }

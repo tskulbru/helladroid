@@ -12,7 +12,6 @@ import info.unyttig.helladroid.activity.NewzBinSearchActivity;
 import info.unyttig.helladroid.activity.NzbMatrixSearchActivity;
 import info.unyttig.helladroid.activity.SettingsActivity;
 import info.unyttig.helladroid.hellanzb.HellaNZBController;
-import info.unyttig.helladroid.nzbmatrix.NzbMatrixController;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -34,6 +33,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnCreateContextMenuListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -75,7 +75,7 @@ public class HellaDroid extends Activity {
 	private final int SEARCH_DIALOG = 4;
 	private final int CANCEL_ITEM = 99;
 
-	// TODO: Let users choose the time intervall.
+	// TODO: Let users choose the time interval.
 	private final int REFRESH_INTERVALL = 10000;
 
 	public static SharedPreferences preferences;
@@ -83,6 +83,7 @@ public class HellaDroid extends Activity {
 	public static boolean paused = false;
 	private final Handler handler = new Handler();
 	public static HashMap<String,String> searchCatnHd = new HashMap<String,String>();
+	public static HashMap<String,String> searchCatMatrix = new HashMap<String,String>();
 
 	private Timer t;
 	private ListView listview;
@@ -126,13 +127,28 @@ public class HellaDroid extends Activity {
 		searchCatnHd.put("Resources", "14");
 		searchCatnHd.put("TV", "8");
 		
-		// Quality
+		// Newzbin quality
 		searchCatnHd.put("Any", "");
 		searchCatnHd.put("XviD", "attr:VideoF~xvid ");
 		searchCatnHd.put("HD", "attr:VideoF~x264 ");
 		searchCatnHd.put("720p", "attr:VideoF~720p ");
 		searchCatnHd.put("1080p", "attr:VideoF~1080p ");
 		
+		
+		// Nzbmatrix categories
+		searchCatMatrix.put("Everything", "0");
+		searchCatMatrix.put("Movies: DVD", "1");
+		searchCatMatrix.put("Movies: DivX/XviD", "2");
+		searchCatMatrix.put("Movies: BRRip", "54");
+		searchCatMatrix.put("Movies: x264", "42");
+		searchCatMatrix.put("TV: DVD", "5");
+		searchCatMatrix.put("TV: DivX/XviD", "6");
+		searchCatMatrix.put("TV: HD", "41");
+		searchCatMatrix.put("TV: Sport/Ent", "7");
+		searchCatMatrix.put("TV: Other", "8");
+		searchCatMatrix.put("Documentaries: STD", "9");
+		searchCatMatrix.put("Documentaries: HD", "53");
+
 		checkForLife();
 		autoQueueRefresh();
 	}
@@ -309,15 +325,28 @@ public class HellaDroid extends Activity {
 		case SEARCH_DIALOG:
 			tracker.trackPageView("/hellaSearch");
 			final View searchDialog = getLayoutInflater().inflate(R.layout.searchdialog, null);
-//			builder.setTitle("Search NewzBin")
-//			builder.setMessage("Please enter your search")
+			Spinner prov = (Spinner) searchDialog.findViewById(R.id.searchProvSpinner);
+			// Define our listener for the provider spinner
+			prov.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+				public void onItemSelected(AdapterView<?> parent, View v, int pos, long id) {
+					if(parent.getSelectedItem().toString().equals("NewzBin")) {
+						searchDialog.findViewById(R.id.searchCatgegoryMatrixSpinner).setVisibility(View.GONE);
+						searchDialog.findViewById(R.id.searchCatgegorySpinner).setVisibility(View.VISIBLE);
+						searchDialog.findViewById(R.id.searchQualitySpinner).setVisibility(View.VISIBLE);
+					} else {
+							searchDialog.findViewById(R.id.searchCatgegoryMatrixSpinner).setVisibility(View.VISIBLE);
+							searchDialog.findViewById(R.id.searchCatgegorySpinner).setVisibility(View.GONE);
+							searchDialog.findViewById(R.id.searchQualitySpinner).setVisibility(View.GONE);
+					}
+				} public void onNothingSelected(AdapterView<?> parent) {} // Not used
+			});
+			
+			// Build the dialog
 			builder.setView(searchDialog)
 			.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					try {
 						EditText et = (EditText) searchDialog.findViewById(R.id.searchString);
-						Spinner s = (Spinner) searchDialog.findViewById(R.id.searchCatgegorySpinner);
-						Spinner s2 = (Spinner) searchDialog.findViewById(R.id.searchQualitySpinner);
 						Spinner s3 = (Spinner) searchDialog.findViewById(R.id.searchProvSpinner);
 						
 						if(et.getText().length() <= 0) {
@@ -325,19 +354,24 @@ public class HellaDroid extends Activity {
 							return;
 						}
 						if(s3.getSelectedItem().toString().equals("NewzBin")) {
+							Spinner s = (Spinner) searchDialog.findViewById(R.id.searchCatgegorySpinner);
+							Spinner s2 = (Spinner) searchDialog.findViewById(R.id.searchQualitySpinner);
 							String ss = searchCatnHd.get(s2.getSelectedItem().toString()) + et.getText().toString();
 							showSearchActivity(ss, searchCatnHd.get(s.getSelectedItem().toString()), "NewzBin");
 						} else {
 							String temp = "" + et.getText();
+							// Strip spaces in front of the string and after the string
 							temp = temp.replaceAll("^[ \t]+|[ \t]+$", "");
 							if(temp.length() <= 0) {
 								DisplayRToast(R.string.msg_empty_search_string);
 								return;
-							} else 
-								showSearchActivity(et.getText().toString(), "0", "NzbMatrix");
+							} else {
+								// Fix the input for web
+								temp = temp.replaceAll(" ", "%20");
+								Spinner s4 = (Spinner) searchDialog.findViewById(R.id.searchCatgegoryMatrixSpinner);
+								showSearchActivity(temp, searchCatMatrix.get(s4.getSelectedItem().toString()), "NzbMatrix");
+							}
 						}
-						Log.i("SearchString: ", et.getText().toString());
-						Log.i("SearchCategory: ", s.getSelectedItem().toString());
 					} catch(Exception e) {
 						Log.e("SearchException: ", ""+e);
 					}

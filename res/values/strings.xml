@@ -18,6 +18,7 @@
 	<string name="setting_nzbmatrix_apikey">NzbMatrix API Key</string>
 	<string name="setting_retention">Your usenet providers retention (def: 7 days)</string>
 	<string name="setting_search_limit">Number of search results shown (def: 10)</string>
+	<string name="setting_search_limit_matrix">Number of search results shown (def: 15)</string>
 	
 	<string name="options_menu_AddNzbID">Add NZB</string>
 	<string name="options_menu_Pause">Continue/Pause</string>
@@ -25,6 +26,7 @@
 	<string name="options_menu_Preferences">Preferences</string>
 	<string name="options_menu_Search">Search</string>
 	<string name="options_menu_Search_Next">Next</string>
+	<string name="options_menu_Search_Previous">Previous</string>
 	<string name="options_menu_About">About</string>
 	<string name="options_menu_Download">Download</string>
 	
@@ -56,4 +58,7 @@
 	<string name="detailedSizeLabel">Size:</string>
 	<string name="detailedNewsgroupsLabel">Newsgroups:</string>
 	<string name="detailedAttributesLabel">Attributes:</string>
+	
+	<string name="detailedCategoryLabel">Category:</string>
+	<string name="detailedLanguageLabel">Language:</string>
 </resources>

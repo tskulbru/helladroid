@@ -2,8 +2,8 @@ package info.unyttig.helladroid.activity;
 
 import info.unyttig.helladroid.R;
 import info.unyttig.helladroid.hellanzb.HellaNZBController;
-import info.unyttig.helladroid.newzbin.NewzBinController;
-import info.unyttig.helladroid.newzbin.NewzBinReport;
+import info.unyttig.helladroid.nzbmatrix.NzbMatrixController;
+import info.unyttig.helladroid.nzbmatrix.NzbMatrixReport;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,15 +39,15 @@ import android.widget.Toast;
  * @author Torstein S. Skulbru <serrghi>
  * @see <a href="http://code.google.com/p/helladroid
  */
-public class NewzBinDetailedSearch extends Activity {
-	private NewzBinReport nbdr;
+public class NzbMatrixDetailedSearch extends Activity {
+	private NzbMatrixReport nbdr;
 	
 	/**
 	 * Called when activity is first created
 	 */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.searchdetailed);
+		setContentView(R.layout.searchdetailedmatrix);
 		fillView();
 	}
 	
@@ -66,7 +66,7 @@ public class NewzBinDetailedSearch extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 		case R.id.detailedAddDownload:
-			HellaNZBController.enqueueNewzBinID(messageHandler, ""+nbdr.getNzbId());
+			HellaNZBController.enqueueUrl(messageHandler, NzbMatrixController.genDownloadString(nbdr.getNzbId()));
 			return true;
 		} return false;
 	}
@@ -94,40 +94,34 @@ public class NewzBinDetailedSearch extends Activity {
 	};
 	
 	/**
-	 * Fill the view based on the results from the newzbin api call,
+	 * Fill the view based on the object identified by its id,
 	 * this displays a detailed view of a report id.
 	 */
 	private void fillView() {
 		Bundle extras = getIntent().getExtras();
-		nbdr = NewzBinController.getReportInfo(extras.getInt("info.unyttig.helladroid.newzbin.NewzBinReport.nzbId"));
-		Log.i("SearchDetailed: ", nbdr.toString());
+		nbdr = (NzbMatrixReport) extras.getSerializable("info.unyttig.helladroid.nzbmatrix.NzbMatrixReport");
+		Log.i("asdasd", nbdr.toString());
 		
 		// Start filling
 		TextView title = (TextView) findViewById(R.id.detailedTitle);
-		title.setText(nbdr.getTitle());
+		title.setText(nbdr.getNzbName());
 		
-		TextView status = (TextView) findViewById(R.id.detailedStatus);
-		status.setText(nbdr.getStatus());
+		TextView status = (TextView) findViewById(R.id.detailedCategory);
+		status.setText(nbdr.getCategory());
 		
-		TextView progress = (TextView) findViewById(R.id.detailedProgress);
-		progress.setText(nbdr.getProgress());
+		TextView progress = (TextView) findViewById(R.id.detailedLanguage);
+		progress.setText(nbdr.getLanguage());
 		
 		TextView url = (TextView) findViewById(R.id.detailedUrl);
-		url.setText(nbdr.getUrl());
-		
-		TextView poster = (TextView) findViewById(R.id.detailedPoster);
-		poster.setText(nbdr.getPoster());
+		url.setText(nbdr.getWeblink());
 		
 		TextView reported = (TextView) findViewById(R.id.detailedReported);
-		reported.setText(nbdr.getReported());
+		reported.setText(nbdr.getIndex_date());
 		
 		TextView size = (TextView) findViewById(R.id.detailedSize);
 		size.setText(nbdr.getSize());
 		
 		TextView newsgroups = (TextView) findViewById(R.id.detailedNewsgroups);
-		newsgroups.setText(nbdr.getNewsgroups());
-		
-		TextView attributes = (TextView) findViewById(R.id.detailedAttributes);
-		attributes.setText(nbdr.getAttributes());
+		newsgroups.setText(nbdr.getGroup());
 	}
 }

@@ -54,11 +54,11 @@
 		<ListPreference
 			android:key="nzbmatrix_search_limit"
 			android:title="Result Limit"
-			android:summary="@string/setting_search_limit"
+			android:summary="@string/setting_search_limit_matrix"
 			android:dependency="nzbmatrix_apikey"
-			android:entries="@array/searchLimits"
-			android:entryValues="@array/searchLimits"
-			android:defaultValue="10"
+			android:entries="@array/searchLimitsMatrix"
+			android:entryValues="@array/searchLimitsMatrix"
+			android:defaultValue="15"
 			/>
 	</PreferenceCategory>
 	<PreferenceCategory android:title="NewzBin Settings">

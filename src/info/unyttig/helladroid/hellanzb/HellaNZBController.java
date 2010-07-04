@@ -161,8 +161,10 @@ public final class HellaNZBController {
 //							Object[] tt = (Object[]) makeApiCall("list");
 							Object[] tt = (Object[]) obj.get("queued");
 							// Test to see if the queue is empty, if it is a error will be thrown.
-							@SuppressWarnings("unused")
-							HashMap<String,Object> testQueue = (HashMap<String, Object>) tt[0];
+							if(tt.length > 0) {
+								HashMap<String,Object> testQueue = (HashMap<String, Object>) tt[0];
+							}
+							
 							ArrayList<String> rows = new ArrayList<String>();
 							// List items in queue
 							for(int i = 0; i < tt.length; i++) {
@@ -187,6 +189,7 @@ public final class HellaNZBController {
 
 						} catch(Exception e) { 
 							Log.e("Controller", "exception", e);
+							isAlive = false;
 							// Used for debugging: callBackUpdateStatus(messageHandler, e.getMessage());
 							// Queue is empty, so empty it.
 							ArrayList<String> rows = new ArrayList<String>();

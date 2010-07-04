@@ -36,9 +36,9 @@ import android.widget.TextView;
  * @see <a href="http://code.google.com/p/helladroid
  */
 public class NewzBinSearchAdapter extends ArrayAdapter<NewzBinReport> {
+	private ArrayList<NewzBinReport> searchItems = new ArrayList<NewzBinReport>();
 	Activity context;
-//	private ArrayList<String> searchItems = new ArrayList<String>();
-  private ArrayList<NewzBinReport> searchItems = new ArrayList<NewzBinReport>();
+	
 	public NewzBinSearchAdapter(Activity context, ArrayList<NewzBinReport> searchItems)
 	{
 		super(context, R.layout.searchnzbitem, searchItems);
@@ -60,5 +60,4 @@ public class NewzBinSearchAdapter extends ArrayAdapter<NewzBinReport> {
 		((TextView) row.findViewById(R.id.searchRowLabelNzbSize)).setText(temp.getSize());
 		return (row);
 	}
-
 }

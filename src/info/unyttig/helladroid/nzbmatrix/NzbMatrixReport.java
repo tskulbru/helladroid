@@ -1,5 +1,7 @@
 package info.unyttig.helladroid.nzbmatrix;
 
+import java.io.Serializable;
+
 /**
  * This file is a part of HellaDroid
  * 
@@ -24,7 +26,9 @@ package info.unyttig.helladroid.nzbmatrix;
  * @author Torstein S. Skulbru <serrghi>
  * @see <a href="http://code.google.com/p/helladroid
  */
-public class NzbMatrixReport {
+public class NzbMatrixReport implements Serializable {
+	private static final long serialVersionUID = -8636417820843609555L;
+	
 	private int nzbId;
 	private String nzbName;
 	private String link;
@@ -42,6 +46,7 @@ public class NzbMatrixReport {
 	private int region;
 	private String downloadString;
 	
+	/* Getters and setters */
 	public int getNzbId() {
 		return nzbId;
 	}
@@ -60,6 +65,11 @@ public class NzbMatrixReport {
 	public void setLink(String link) {
 		this.link = link;
 	}
+	
+	/** 
+	 * Converts the size to readable output
+	 * @return
+	 */
 	public String getSize() {
 		double temp = size/1024/1024;
 		int temp2 = (int) temp;

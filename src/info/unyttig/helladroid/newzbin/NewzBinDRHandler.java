@@ -33,6 +33,7 @@ import android.util.Log;
  * @author Torstein S. Skulbru <serrghi>
  * @see <a href="http://code.google.com/p/helladroid
  */
+@SuppressWarnings("unused")
 public class NewzBinDRHandler extends DefaultHandler {
 	private boolean in_reportinfo = false;
 	private boolean in_id = false;
