@@ -24,4 +24,8 @@
 		android:icon="@android:drawable/ic_menu_info_details"
 		android:id="@+id/menuAbout" 
 		android:title="@string/options_menu_About"/>
+	<item
+		android:icon="@android:drawable/ic_menu_info_details"
+		android:id="@+id/menuLog"
+		android:title="Log" />
 </menu>

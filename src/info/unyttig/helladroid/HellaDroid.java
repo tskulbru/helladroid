@@ -8,6 +8,7 @@ import java.util.TimerTask;
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import info.unyttig.helladroid.R;
+import info.unyttig.helladroid.activity.LogActivity;
 import info.unyttig.helladroid.activity.NewzBinSearchActivity;
 import info.unyttig.helladroid.activity.NzbMatrixSearchActivity;
 import info.unyttig.helladroid.activity.SettingsActivity;
@@ -74,9 +75,10 @@ public class HellaDroid extends Activity {
 	private final int ABOUT_DIALOG = 3;
 	private final int SEARCH_DIALOG = 4;
 	private final int CANCEL_ITEM = 99;
-
+	private String currentDownload = "Not downloading anything#0#--:--:--#--#--#-";
+	
 	// TODO: Let users choose the time interval.
-	private final int REFRESH_INTERVALL = 10000;
+	private final int REFRESH_INTERVALL = 5000;
 
 	public static SharedPreferences preferences;
 	private static ArrayList<String> queueRows = new ArrayList<String>();
@@ -89,7 +91,9 @@ public class HellaDroid extends Activity {
 	private ListView listview;
 
 	GoogleAnalyticsTracker tracker;
-
+	AlertDialog.Builder builder;
+	AlertDialog alert;
+	
 	/** 
 	 * Called when the activity is first created. 
 	 */
@@ -100,6 +104,7 @@ public class HellaDroid extends Activity {
 //		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		// Tracking info
+		builder = new AlertDialog.Builder(this);
 		tracker = GoogleAnalyticsTracker.getInstance();
 		tracker.start("UA-8731983-3", 20, this);
 		tracker.trackPageView("/hellaDroidHome");
@@ -176,10 +181,37 @@ public class HellaDroid extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		tracker.stop();
-//		Uncomment next line to kill when orientation changes
-//		this.finish();
 	}
 
+	/**
+	 * Saves the current queue and queuelist when application is paused (or orientation is changed)
+	 * @param savedInstanceState 
+	 */
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.putString("currentDownload", currentDownload);
+		savedInstanceState.putStringArrayList("queueRows", queueRows);
+		super.onSaveInstanceState(savedInstanceState);
+	}
+
+	/**
+	 * Restores the saved instance state
+	 */
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		if(savedInstanceState.getString("currentDownload").length() > 0 && 
+				!savedInstanceState.getString("currentDownload").equals(currentDownload)) {
+			currentDownload = savedInstanceState.getString("currentDownload");savedInstanceState.getString("currentDownload");
+			updateCurrentDownload(currentDownload);
+		}
+		if(savedInstanceState.getStringArrayList("queueRows").size() > 0) {
+			queueRows = savedInstanceState.getStringArrayList("queueRows");
+			ListView listView = (ListView) findViewById(R.id.queueNzbList);
+			@SuppressWarnings("unchecked")
+			ArrayAdapter<String> adapter = (ArrayAdapter<String>) listView.getAdapter();
+			adapter.notifyDataSetChanged();
+		}
+	}
+	
 	/**
 	 * Create the options menu, using options_menu.xml as layout
 	 */
@@ -227,6 +259,9 @@ public class HellaDroid extends Activity {
 		case R.id.menuAbout:
 			showDialog(ABOUT_DIALOG);
 			return true;
+		case R.id.menuLog:
+			startActivity(new Intent(this, LogActivity.class));
+			return true;
 		} return false;
 	}
 
@@ -273,8 +308,6 @@ public class HellaDroid extends Activity {
 	 * The method which contains all the dialogs for quiting, adding etc.
 	 */
 	protected Dialog onCreateDialog(int id) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		AlertDialog alert;
 		final EditText input = new EditText(this);
 
 		switch(id) {
@@ -488,6 +521,7 @@ public class HellaDroid extends Activity {
 	 * @param curr
 	 */
 	private void updateCurrentDownload(String curr) {
+		currentDownload = curr;
 		String[] values = curr.split("#");
 		try
 		{

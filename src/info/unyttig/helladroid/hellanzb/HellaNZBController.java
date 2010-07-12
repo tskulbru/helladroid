@@ -45,13 +45,16 @@ public final class HellaNZBController {
 	public static final int MSG_NEW_STATUS_UPDATE = 1; 
 	public static final int MSG_QUEUE_UPDATE = 2;
 	public static final int MSG_CURR_DOWN_UPDATE = 3;
+	public static final int MSG_SHOW_LOG = 4;
 	public static double downSpeed = 0.0;
 	public static boolean isPaused = false;
 	public static boolean isAlive  = false;
 	public static boolean pendingQuery = false;
 	private static URI uri;
 	private static XMLRPCClient client;
-	private static HashMap<String,Object> obj;
+	private static HashMap<String,Object> obj = null;
+	
+	private static String LOG_NAME ="<HellaDroid> HellaNZBController: ";
 
 	/**
 	 * Query a Pause or Continue request to HellaNZB
@@ -83,6 +86,7 @@ public final class HellaNZBController {
 								callBackUpdateStatus(messageHandler, R.string.msg_nzb_pause);
 							}
 						} catch(Exception e) {
+							Log.e(LOG_NAME, e.getMessage());
 							callBackUpdateStatus(messageHandler, e); 
 						} finally {
 							pendingQuery = false;
@@ -129,9 +133,10 @@ public final class HellaNZBController {
 				message.sendToTarget();
 
 			} catch(Exception e) {
-				//				callBackUpdateStatus(messageHandler, "Queue is empty"); 
+				Log.e(LOG_NAME, e.getMessage());
+//				callBackUpdateStatus(messageHandler, "Queue is empty"); 
 				String currNzbItem = "Not downloading anything#0#--:--:--#--#--#-";
-
+				
 				Message message = new Message();
 				message.setTarget(messageHandler);
 				message.what = MSG_CURR_DOWN_UPDATE;
@@ -158,10 +163,10 @@ public final class HellaNZBController {
 					public void run() {
 						try {
 							showCurrentDownload(messageHandler);
-//							Object[] tt = (Object[]) makeApiCall("list");
 							Object[] tt = (Object[]) obj.get("queued");
 							// Test to see if the queue is empty, if it is a error will be thrown.
 							if(tt.length > 0) {
+								@SuppressWarnings("unused")
 								HashMap<String,Object> testQueue = (HashMap<String, Object>) tt[0];
 							}
 							
@@ -188,7 +193,7 @@ public final class HellaNZBController {
 							message.sendToTarget();
 
 						} catch(Exception e) { 
-							Log.e("Controller", "exception", e);
+							Log.e(LOG_NAME, e.getMessage());
 							isAlive = false;
 							// Used for debugging: callBackUpdateStatus(messageHandler, e.getMessage());
 							// Queue is empty, so empty it.
@@ -230,7 +235,7 @@ public final class HellaNZBController {
 							makeApiCall("enqueuenewzbin", nzbid);
 							callBackUpdateStatus(messageHandler, R.string.msg_enqueue_newzbin);
 						} catch(Exception e) {
-
+							Log.e(LOG_NAME, e.getMessage());
 						} finally {
 							pendingQuery = false;
 							callBackUpdateStatus(messageHandler, R.string.msg_enqueue_newzbin);
@@ -259,7 +264,7 @@ public final class HellaNZBController {
 						try {
 							makeApiCall("enqueueurl", nzbUrl);
 						} catch(Exception e) {
-
+							Log.e(LOG_NAME, e.getMessage());
 						} finally {
 							pendingQuery = false;
 							callBackUpdateStatus(messageHandler, R.string.msg_enqueue_nzb);
@@ -288,7 +293,7 @@ public final class HellaNZBController {
 							if(top) makeApiCall("force", nzbId);
 							else makeApiCall("last", nzbId);
 						} catch(Exception e) {
-
+							Log.e(LOG_NAME, e.getMessage());
 						} finally {
 							pendingQuery = false;
 						}
@@ -316,7 +321,7 @@ public final class HellaNZBController {
 							if(up) makeApiCall("up", nzbId);
 							else makeApiCall("down", nzbId);
 						} catch(Exception e) {
-
+							Log.e(LOG_NAME, e.getMessage());
 						} finally {
 							pendingQuery = false;
 						}
@@ -343,7 +348,7 @@ public final class HellaNZBController {
 						try {
 							makeApiCall("dequeue", nzbId);
 						} catch(Exception e) {
-
+							Log.e(LOG_NAME, e.getMessage());
 						} finally {
 							pendingQuery = false;
 							listQueue(messageHandler);
@@ -371,7 +376,7 @@ public final class HellaNZBController {
 						try {
 							makeApiCall("cancel");
 						} catch(Exception e) {
-
+							Log.e(LOG_NAME, e.getMessage());
 						} finally {
 							pendingQuery = false;
 							listQueue(messageHandler);
@@ -381,6 +386,63 @@ public final class HellaNZBController {
 				};
 				pendingQuery = true;
 				thread.start();
+			}
+		} else callBackUpdateStatus(messageHandler, R.string.msg_server_down);
+	}
+	
+	/**
+	 * Fetches some various info from the server, as well as the logs.
+	 * @param messageHandler
+	 */
+	@SuppressWarnings("unchecked")
+	public static void showInfoLog(final Handler messageHandler) {
+		HashMap<String, Object> infoLog = new HashMap<String, Object>();
+		if(!isAlive) setupConnection();
+		if(isAlive) {
+			try {
+				obj = (HashMap<String, Object>) makeApiCall("status");
+				infoLog.put("uptime", obj.get("uptime").toString());
+				infoLog.put("version", obj.get("version").toString());
+				infoLog.put("hostname", obj.get("hostname").toString());
+				
+				Object[] tt = (Object[]) obj.get("log_entries");
+				// Test to see if the logs are empty, if it is a error will be thrown.
+				if(tt.length > 0) {
+					@SuppressWarnings("unused")
+					HashMap<String,Object> testQueue = (HashMap<String, Object>) tt[0];
+				}
+				
+				ArrayList<String> errorEntries = new ArrayList<String>();
+				ArrayList<String> infoEntries = new ArrayList<String>();
+				// List items in log
+				for(int i = 0; i < tt.length; i++) {
+					HashMap<String,Object> obj2 = (HashMap<String, Object>) tt[i];
+					if(obj2.containsKey("ERROR"))
+						errorEntries.add(obj2.get("ERROR").toString());
+					if(obj2.containsKey("INFO"))
+						infoEntries.add(obj2.get("INFO").toString());
+				}
+				infoLog.put("errorEntries", errorEntries);
+				infoLog.put("infoEntries", infoEntries);
+			
+				// return the message to the message handler.
+				Message message = new Message();
+				message.setTarget(messageHandler);
+				message.what = MSG_SHOW_LOG;
+				message.obj = infoLog;
+				message.sendToTarget();
+
+			} catch(Exception e) {
+				Log.e(LOG_NAME, e.getMessage());
+				
+				infoLog.put("exception", "Something went wrong, try again");
+				Message message = new Message();
+				message.setTarget(messageHandler);
+				message.what = MSG_SHOW_LOG;
+				message.obj = infoLog;
+				message.sendToTarget();
+			} finally {
+				pendingQuery = false;
 			}
 		} else callBackUpdateStatus(messageHandler, R.string.msg_server_down);
 	}
@@ -410,6 +472,7 @@ public final class HellaNZBController {
 				return client.call(command);
 			} else setupConnection();
 		} catch(XMLRPCException e) {
+			Log.e(LOG_NAME, e.getMessage());
 			isAlive = false;
 		}
 		return null;
@@ -427,6 +490,7 @@ public final class HellaNZBController {
 				return client.call(command, xtra);
 			} else setupConnection();
 		} catch(XMLRPCException e) {
+			Log.e(LOG_NAME, e.getMessage());
 			isAlive = false;
 		}
 		return null;
@@ -451,7 +515,7 @@ public final class HellaNZBController {
 			if(client.call("aolsay") != "")
 				isAlive = true;
 		} catch(Exception e) {
-			Log.e("HellaDroidNZBSETUP: ", "Error", e);
+			Log.e(LOG_NAME, e.getMessage());
 			isAlive = false;
 		}
 	}

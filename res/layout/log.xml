@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent">
+	<RelativeLayout 
+		android:layout_width="fill_parent" 
+		android:layout_height="fill_parent" >
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:id="@+id/hellanzbversion" 
+			android:text="HellaNZB vx.x" 
+			android:padding="10dip"
+			android:layout_centerHorizontal="true" 
+			android:textSize="18dip"
+			android:textStyle="bold" />
+		<TableLayout 
+			android:id="@+id/hellanzbtable"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_below="@id/hellanzbversion"
+			android:scrollbarAlwaysDrawVerticalTrack="true">
+			<TableRow>
+				<TextView 
+					android:text="Uptime: "
+					android:id="@+id/hellanzbuptimelabel" 
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content" 
+					android:textStyle="bold"
+					android:gravity="right" />
+				<TextView 
+					android:layout_marginLeft="10px" 
+					android:id="@+id/hellanzbuptime"
+					android:layout_width="wrap_content" 
+					android:layout_height="wrap_content" />
+			</TableRow>
+			<TableRow>
+				<TextView 
+					android:text="Hostname: "
+					android:id="@+id/hellanzbhostnamelabel" 
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content" 
+					android:textStyle="bold"
+					android:gravity="right" />
+				<TextView 
+					android:layout_marginLeft="10px" 
+					android:id="@+id/hellanzbhostname"
+					android:layout_width="wrap_content" 
+					android:layout_height="wrap_content" />
+			</TableRow>
+		</TableLayout>
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:id="@+id/hellanzberrorlog" 
+			android:text="HellaNZB vx.x" 
+			android:layout_below="@id/hellanzbtable" 
+			android:textColor="#ff0000"
+			android:paddingTop="20px"/>
+		<TextView 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" 
+			android:id="@+id/hellanzbinfolog" 
+			android:text="HellaNZB vx.x"
+			android:layout_below="@id/hellanzberrorlog" 
+			android:textColor="#ffff00"/>
+	</RelativeLayout>
+</ScrollView>
