@@ -219,6 +219,39 @@ public final class HellaNZBController {
 	}
 
 	/**
+	 * Enqueue an NZB file.
+	 * 
+	 * @author BAHayman
+	 * @param messageHandler
+	 * @param nzbid
+	 */
+	public static void enqueueNZBFile(final Handler messageHandler, final String nzbFilename, final String nzbData) {
+		if(!isAlive) setupConnection();
+		if(isAlive) {
+			if(!pendingQuery) {
+				Thread thread = new Thread() {
+					@SuppressWarnings("unchecked")
+					public void run() {
+						try {
+							@SuppressWarnings("unused")
+							HashMap<String, Object> response = (HashMap<String, Object>) makeApiCall("enqueue", nzbFilename, nzbData);
+							callBackUpdateStatus(messageHandler, R.string.msg_enqueue_nzb);
+						} catch(Exception e) {
+							Log.e(LOG_NAME, e.getMessage());
+						} finally {
+							pendingQuery = false;
+							callBackUpdateStatus(messageHandler, R.string.msg_enqueue_nzb);
+							listQueue(messageHandler);
+						}
+					}
+				};
+				pendingQuery = true;
+				thread.start();
+			}
+		} else callBackUpdateStatus(messageHandler, R.string.msg_server_down);
+	}
+	
+	/**
 	 * Enqueue a Newzbin ID.
 	 * @see http://www.newzbin.com
 	 * 
@@ -488,6 +521,25 @@ public final class HellaNZBController {
 		try {
 			if(isAlive) {
 				return client.call(command, xtra);
+			} else setupConnection();
+		} catch(XMLRPCException e) {
+			Log.e(LOG_NAME, e.getMessage());
+			isAlive = false;
+		}
+		return null;
+	}
+	
+	/**
+	 * Makes a HellaNZB client call, with command and possible extras.
+	 * @param command
+	 * @param xtra1
+	 * @param xtra2
+	 * @return
+	 */
+	private static Object makeApiCall(String command, String xtra1, String xtra2) {
+		try {
+			if(isAlive) {
+				return client.call(command, xtra1, xtra2);
 			} else setupConnection();
 		} catch(XMLRPCException e) {
 			Log.e(LOG_NAME, e.getMessage());

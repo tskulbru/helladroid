@@ -44,6 +44,7 @@
 	<string name="msg_enqueue_nzb">NZB enqueued..</string>
 	<string name="msg_empty_search_string">Missing search string</string>
 	<string name="msg_nzb_removed">NZB removed..</string>
+	<string name="msg_empty_input">You forgot to enter any text!</string>
 	
 	<string name="search_category_prompt">Choose category</string>
 	<string name="search_quality_prompt">Choose quality</string>

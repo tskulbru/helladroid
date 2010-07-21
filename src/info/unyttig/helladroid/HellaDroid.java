@@ -5,6 +5,14 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
+
 import com.google.android.apps.analytics.GoogleAnalyticsTracker;
 
 import info.unyttig.helladroid.R;
@@ -18,6 +26,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -71,12 +80,16 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
  */
 public class HellaDroid extends Activity {
 	private final int EMPTY_SETTINGS = 0;
-	private final int ADD_NEWZBIN_ID = 2;
-	private final int ABOUT_DIALOG = 3;
-	private final int SEARCH_DIALOG = 4;
+	private final int ADD_NZB = 1;
+	private final int ADD_NZB_FILE = 2;
+	private final int ADD_NEWZBIN_ID = 3;
+	private final int ADD_NZB_URL = 4;
+	private final int ABOUT_DIALOG = 5;
+	private final int SEARCH_DIALOG = 6;
 	private final int CANCEL_ITEM = 99;
 	private String currentDownload = "Not downloading anything#0#--:--:--#--#--#-";
-	
+	private static String LOG_NAME ="<HellaDroid> HellaDroid: ";
+
 	// TODO: Let users choose the time interval.
 	private final int REFRESH_INTERVALL = 5000;
 
@@ -91,9 +104,7 @@ public class HellaDroid extends Activity {
 	private ListView listview;
 
 	GoogleAnalyticsTracker tracker;
-	AlertDialog.Builder builder;
-	AlertDialog alert;
-	
+
 	/** 
 	 * Called when the activity is first created. 
 	 */
@@ -101,10 +112,9 @@ public class HellaDroid extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
-//		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		//		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		// Tracking info
-		builder = new AlertDialog.Builder(this);
 		tracker = GoogleAnalyticsTracker.getInstance();
 		tracker.start("UA-8731983-3", 20, this);
 		tracker.trackPageView("/hellaDroidHome");
@@ -131,15 +141,15 @@ public class HellaDroid extends Activity {
 		searchCatnHd.put("PDA", "12");
 		searchCatnHd.put("Resources", "14");
 		searchCatnHd.put("TV", "8");
-		
+
 		// Newzbin quality
 		searchCatnHd.put("Any", "");
 		searchCatnHd.put("XviD", "attr:VideoF~xvid ");
 		searchCatnHd.put("HD", "attr:VideoF~x264 ");
 		searchCatnHd.put("720p", "attr:VideoF~720p ");
 		searchCatnHd.put("1080p", "attr:VideoF~1080p ");
-		
-		
+
+
 		// Nzbmatrix categories
 		searchCatMatrix.put("Everything", "0");
 		searchCatMatrix.put("Movies: DVD", "1");
@@ -211,7 +221,7 @@ public class HellaDroid extends Activity {
 			adapter.notifyDataSetChanged();
 		}
 	}
-	
+
 	/**
 	 * Create the options menu, using options_menu.xml as layout
 	 */
@@ -240,7 +250,7 @@ public class HellaDroid extends Activity {
 		switch(item.getItemId()) {
 		case R.id.menuAddNzbID:
 			if(checkForLife())
-				showDialog(ADD_NEWZBIN_ID);
+				showDialog(ADD_NZB);
 			return true;
 		case R.id.menuPause:
 			if(checkForLife())
@@ -254,7 +264,7 @@ public class HellaDroid extends Activity {
 				manualQueueRefresh();
 			return true;
 		case R.id.menuSearch:
-				showDialog(SEARCH_DIALOG);
+			showDialog(SEARCH_DIALOG);
 			return true;
 		case R.id.menuAbout:
 			showDialog(ABOUT_DIALOG);
@@ -298,19 +308,88 @@ public class HellaDroid extends Activity {
 		case R.id.qItemDequeue:
 			HellaNZBController.qItemDequeue(messageHandler, nzbId);
 			return true;
-		case CANCEL_ITEM:
-			showDialog(ABOUT_DIALOG);
-			return true;
 		} return false;
 	}
+
 
 	/**
 	 * The method which contains all the dialogs for quiting, adding etc.
 	 */
 	protected Dialog onCreateDialog(int id) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		AlertDialog alert = null;
 		final EditText input = new EditText(this);
 
 		switch(id) {
+
+		/* Choose which method to add the NZB */
+		case ADD_NZB:
+			String[] options = { "NewzBin", "File", "URL" };
+			builder.setTitle("Select method").setItems(options, new OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					switch(which) {
+					case 0:
+						showDialog(ADD_NEWZBIN_ID);
+						break;
+					case 1:
+						showDialog(ADD_NZB_FILE);
+						break;
+					case 2:
+						showDialog(ADD_NZB_URL);
+						break;
+					}
+				}
+			});
+			alert = builder.create();
+			break;
+
+			/* Add a NZB from a URL */
+		case ADD_NZB_URL:
+			tracker.trackPageView("/hellaAddNzbUrl");
+			builder.setTitle("Add NZB from Newzbin")
+			.setMessage("Enter the URL you wish to queue:")
+			.setView(input)
+			.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					String nzbUrl = input.getText().toString();
+					if(nzbUrl.length() > 0) {
+						if(!nzbUrl.matches("(https?)://.+"))
+							nzbUrl = "http://" + nzbUrl;
+						HellaNZBController.enqueueUrl(messageHandler, nzbUrl);
+					} else DisplayRToast(R.string.msg_empty_input);
+				}
+			})
+			.setNegativeButton("Cancel",
+					new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					return;
+				}
+			});
+			alert = builder.create();
+			break;
+
+			/* Add a NZB from a file from the sdcard, contribution courtesy of BAHayman */
+		case ADD_NZB_FILE:
+			tracker.trackPageView("/hellaAddNzbFile");
+			File downloadDir = new File("/sdcard/");
+			if (downloadDir.exists()) {
+				final String[] nzbs = findFilesRecursive(downloadDir,".nzb");
+				builder.setTitle("Select NZB file").setItems(nzbs, new OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						File nzbFile = new File(nzbs[which]);
+						try {
+							HellaNZBController.enqueueNZBFile(
+									messageHandler, nzbFile.getName(),
+									readFile(nzbFile));
+						} catch (IOException e) {
+							Log.e(LOG_NAME, e.getMessage());
+						}
+					}
+				});
+				alert = builder.create();
+			} break;
+
+			/* Add a NZB based on NewzBin ID */
 		case ADD_NEWZBIN_ID:
 			tracker.trackPageView("/hellaAddNewzId");
 			builder.setTitle("Add NZB from Newzbin")
@@ -328,8 +407,9 @@ public class HellaDroid extends Activity {
 				}
 			});
 			alert = builder.create();
-			return alert;
+			break;
 
+			/* First runtime */
 		case EMPTY_SETTINGS:
 			builder.setTitle("Configuration needed")
 			.setMessage("HellaDroid isn't configured properly, do it now?")
@@ -346,7 +426,9 @@ public class HellaDroid extends Activity {
 				}
 			});
 			alert = builder.create();
-			return alert;
+			break;
+
+			/* Information dialog, about */
 		case ABOUT_DIALOG:
 			tracker.trackPageView("/hellaAbout");
 			builder.setTitle("About");
@@ -354,7 +436,9 @@ public class HellaDroid extends Activity {
 			((TextView)about.findViewById(R.id.helladroid)).setText("HellaDroid v" + getCurrentVersion(this));
 			builder.setView(about);
 			alert = builder.create();
-			return alert;
+			break;
+
+			/* Search dialog, NewzBin and NZBMatrix */
 		case SEARCH_DIALOG:
 			tracker.trackPageView("/hellaSearch");
 			final View searchDialog = getLayoutInflater().inflate(R.layout.searchdialog, null);
@@ -367,13 +451,13 @@ public class HellaDroid extends Activity {
 						searchDialog.findViewById(R.id.searchCatgegorySpinner).setVisibility(View.VISIBLE);
 						searchDialog.findViewById(R.id.searchQualitySpinner).setVisibility(View.VISIBLE);
 					} else {
-							searchDialog.findViewById(R.id.searchCatgegoryMatrixSpinner).setVisibility(View.VISIBLE);
-							searchDialog.findViewById(R.id.searchCatgegorySpinner).setVisibility(View.GONE);
-							searchDialog.findViewById(R.id.searchQualitySpinner).setVisibility(View.GONE);
+						searchDialog.findViewById(R.id.searchCatgegoryMatrixSpinner).setVisibility(View.VISIBLE);
+						searchDialog.findViewById(R.id.searchCatgegorySpinner).setVisibility(View.GONE);
+						searchDialog.findViewById(R.id.searchQualitySpinner).setVisibility(View.GONE);
 					}
 				} public void onNothingSelected(AdapterView<?> parent) {} // Not used
 			});
-			
+
 			// Build the dialog
 			builder.setView(searchDialog)
 			.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -381,7 +465,7 @@ public class HellaDroid extends Activity {
 					try {
 						EditText et = (EditText) searchDialog.findViewById(R.id.searchString);
 						Spinner s3 = (Spinner) searchDialog.findViewById(R.id.searchProvSpinner);
-						
+
 						if(et.getText().length() <= 0) {
 							DisplayRToast(R.string.msg_empty_search_string);
 							return;
@@ -418,9 +502,12 @@ public class HellaDroid extends Activity {
 				}
 			});
 			alert = builder.create();
-			return alert;
+			break;
+
+		default:
+			alert = null;
 		}
-		return null;
+		return alert;
 	}
 
 	/**
@@ -458,7 +545,7 @@ public class HellaDroid extends Activity {
 	private void showSettings() {
 		startActivity(new Intent(this, SettingsActivity.class));
 	}
-	
+
 	/**
 	 * This method starts the search activity
 	 * 
@@ -601,5 +688,64 @@ public class HellaDroid extends Activity {
 	 */
 	private QueueNzbListRowAdapter getNzbItemAdapter() {
 		return (QueueNzbListRowAdapter) listview.getAdapter();
+	}
+
+	/**
+	 * Searches recursively to find all files that match the filter
+	 * 
+	 * @author BAHayman
+	 * @param directory
+	 * @param fileExtension
+	 * @return
+	 */
+	private String[] findFilesRecursive(File directory,
+			final String fileExtension) {
+		ArrayList<String> filesFound = new ArrayList<String>();
+
+		File[] files = directory.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				if (pathname.isDirectory())
+					return true;
+				else if (pathname.getName().endsWith(fileExtension))
+					return true;
+				else
+					return false;
+			}
+		});
+		if (files != null) {
+			for (File file : files) {
+				if (file.isDirectory()) {
+					String[] filesFoundR = findFilesRecursive(file, fileExtension);
+					for (String fileR : filesFoundR) {
+						filesFound.add(fileR);
+					}
+				} else if (file.canRead()) {
+					filesFound.add(file.getAbsolutePath());
+				}
+			}
+		}
+		return filesFound.toArray(new String[0]);
+	}
+
+	/**
+	 * Reads a file into a String
+	 * 
+	 * @author BAHayman
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	private static String readFile(File file) throws IOException {
+		FileInputStream stream = new FileInputStream(file);
+		try {
+			FileChannel fc = stream.getChannel();
+			MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc
+					.size());
+			/* Instead of using default, pass in a decoder. */
+			return Charset.defaultCharset().decode(bb).toString();
+		} finally {
+			stream.close();
+		}
 	}
 }
