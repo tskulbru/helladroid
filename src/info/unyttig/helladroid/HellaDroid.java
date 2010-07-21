@@ -34,6 +34,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.ClipboardManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -365,6 +366,12 @@ public class HellaDroid extends Activity {
 					return;
 				}
 			});
+			
+			// Add clipboard contents to input by default if the clipboard contents are a url
+			ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+			if (clipboard.hasText() && clipboard.getText().toString().startsWith("http"))
+				input.setText(clipboard.getText());
+			
 			alert = builder.create();
 			break;
 
