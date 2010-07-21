@@ -38,8 +38,7 @@ import android.util.Log;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Torstein S. Skulbru <serrghi>
- * @see <a href="http://code.google.com/p/helladroid
- * TODO: Create a query queue, ensures queries wont get "lost".
+ * @link http://code.google.com/p/helladroid
  */
 public final class HellaNZBController {
 	public static final int MSG_NEW_STATUS_UPDATE = 1; 

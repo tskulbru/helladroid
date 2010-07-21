@@ -37,7 +37,7 @@ import android.widget.Toast;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Torstein S. Skulbru <serrghi>
- * @see <a href="http://code.google.com/p/helladroid
+ * @link href="http://code.google.com/p/helladroid 
  */
 public class NewzBinDetailedSearch extends Activity {
 	private NewzBinReport nbdr;

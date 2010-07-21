@@ -77,7 +77,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Torstein S. Skulbru <serrghi>
- * @see <a href="http://code.google.com/p/helladroid 
+ * @link http://code.google.com/p/helladroid 
  */
 public class HellaDroid extends Activity {
 	private final int EMPTY_SETTINGS = 0;
@@ -344,7 +344,7 @@ public class HellaDroid extends Activity {
 			alert = builder.create();
 			break;
 
-			/* Add a NZB from a URL */
+		/* Add a NZB from a URL */
 		case ADD_NZB_URL:
 			tracker.trackPageView("/hellaAddNzbUrl");
 			builder.setTitle("Add NZB from Newzbin")
@@ -375,7 +375,7 @@ public class HellaDroid extends Activity {
 			alert = builder.create();
 			break;
 
-			/* Add a NZB from a file from the sdcard, contribution courtesy of BAHayman */
+		/* Add a NZB from a file from the sdcard, contribution courtesy of BAHayman */
 		case ADD_NZB_FILE:
 			tracker.trackPageView("/hellaAddNzbFile");
 			File downloadDir = new File("/sdcard/");
@@ -396,7 +396,7 @@ public class HellaDroid extends Activity {
 				alert = builder.create();
 			} break;
 
-			/* Add a NZB based on NewzBin ID */
+		/* Add a NZB based on NewzBin ID */
 		case ADD_NEWZBIN_ID:
 			tracker.trackPageView("/hellaAddNewzId");
 			builder.setTitle("Add NZB from Newzbin")
@@ -416,7 +416,7 @@ public class HellaDroid extends Activity {
 			alert = builder.create();
 			break;
 
-			/* First runtime */
+		/* First runtime */
 		case EMPTY_SETTINGS:
 			builder.setTitle("Configuration needed")
 			.setMessage("HellaDroid isn't configured properly, do it now?")
@@ -435,7 +435,7 @@ public class HellaDroid extends Activity {
 			alert = builder.create();
 			break;
 
-			/* Information dialog, about */
+		/* Information dialog, about */
 		case ABOUT_DIALOG:
 			tracker.trackPageView("/hellaAbout");
 			builder.setTitle("About");
@@ -445,7 +445,7 @@ public class HellaDroid extends Activity {
 			alert = builder.create();
 			break;
 
-			/* Search dialog, NewzBin and NZBMatrix */
+		/* Search dialog, NewzBin and NZBMatrix */
 		case SEARCH_DIALOG:
 			tracker.trackPageView("/hellaSearch");
 			final View searchDialog = getLayoutInflater().inflate(R.layout.searchdialog, null);

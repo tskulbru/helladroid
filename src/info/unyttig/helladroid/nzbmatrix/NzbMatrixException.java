@@ -22,7 +22,7 @@ package info.unyttig.helladroid.nzbmatrix;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Torstein S. Skulbru <serrghi>
- * @see <a href="http://code.google.com/p/helladroid
+ * @link http://code.google.com/p/helladroid
  */
 public class NzbMatrixException extends Exception {
 	private static final long serialVersionUID = 8679641372030347816L;

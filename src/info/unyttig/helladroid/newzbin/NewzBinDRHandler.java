@@ -31,7 +31,7 @@ import android.util.Log;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Torstein S. Skulbru <serrghi>
- * @see <a href="http://code.google.com/p/helladroid
+ * @link http://code.google.com/p/helladroid
  */
 @SuppressWarnings("unused")
 public class NewzBinDRHandler extends DefaultHandler {

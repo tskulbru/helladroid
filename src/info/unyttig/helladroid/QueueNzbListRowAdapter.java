@@ -31,7 +31,7 @@ import android.widget.TextView;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Torstein S. Skulbru <serrghi>
- * @see <a href="http://code.google.com/p/helladroid
+ * @link http://code.google.com/p/helladroid
  */
 public class QueueNzbListRowAdapter extends ArrayAdapter<String>
 {

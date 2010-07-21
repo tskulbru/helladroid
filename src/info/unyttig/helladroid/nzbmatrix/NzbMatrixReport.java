@@ -24,7 +24,7 @@ import java.io.Serializable;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Torstein S. Skulbru <serrghi>
- * @see <a href="http://code.google.com/p/helladroid
+ * @link http://code.google.com/p/helladroid
  */
 public class NzbMatrixReport implements Serializable {
 	private static final long serialVersionUID = -8636417820843609555L;
@@ -65,11 +65,6 @@ public class NzbMatrixReport implements Serializable {
 	public void setLink(String link) {
 		this.link = link;
 	}
-	
-	/** 
-	 * Converts the size to readable output
-	 * @return
-	 */
 	public String getSize() {
 		double temp = size/1024/1024;
 		int temp2 = (int) temp;
@@ -144,14 +139,12 @@ public class NzbMatrixReport implements Serializable {
 	public void setRegion(int region) {
 		this.region = region;
 	}
-	
 	public void setDownloadString(String downloadString) {
 		this.downloadString = downloadString;
 	}
 	public String getDownloadString() {
 		return downloadString;
 	}
-	
 	public String toString() {
 		return "NzbMatrixReport [category=" + category + ", comments="
 				+ comments + ", group=" + group + ", hits=" + hits + ", image="

@@ -22,7 +22,7 @@ package info.unyttig.helladroid.hellanzb;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Torstein S. Skulbru <serrghi>
- * @see <a href="http://code.google.com/p/helladroid
+ * @link http://code.google.com/p/helladroid
  */
 public class HellaNzbConnException extends Exception {
 	private static final long serialVersionUID = -8972762490684876572L;

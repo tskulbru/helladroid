@@ -49,7 +49,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * @author Torstein S. Skulbru <serrghi>
- * @see <a href="http://code.google.com/p/helladroid
+ * @link href="http://code.google.com/p/helladroid 
  */
 public class NewzBinSearchActivity extends ListActivity {
 	private final static SharedPreferences preferences = HellaDroid.preferences;
