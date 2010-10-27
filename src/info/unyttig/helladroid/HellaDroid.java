@@ -166,7 +166,7 @@ public class HellaDroid extends Activity {
 		searchCatMatrix.put("Documentaries: HD", "53");
 
 		checkForLife();
-		autoQueueRefresh();
+		messageHandler.post(autoQueueRefresh);
 	}
 
 
@@ -532,7 +532,7 @@ public class HellaDroid extends Activity {
 	 * method will run for as long as is defined in REFRESH_INTERVAL.
 	 * TODO let the user choose this time period himself.
 	 */
-	private void autoQueueRefresh() {
+	/*private void autoQueueRefresh() {
 		t = new Timer();
 		t.schedule(new TimerTask() {
 			public void run() {
@@ -544,8 +544,16 @@ public class HellaDroid extends Activity {
 				});
 			}
 		}, 0, REFRESH_INTERVALL);
-	}
+	}*/
 
+	private Runnable autoQueueRefresh = new Runnable() {
+		public void run() {
+			if(!paused && HellaNZBController.isAlive)
+				manualQueueRefresh();
+			handler.postDelayed(this, REFRESH_INTERVALL);
+		}
+	};
+	
 	/**
 	 * This method starts the settings activity
 	 */

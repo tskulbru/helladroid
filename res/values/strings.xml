@@ -29,6 +29,8 @@
 	<string name="options_menu_Search_Previous">Previous</string>
 	<string name="options_menu_About">About</string>
 	<string name="options_menu_Download">Download</string>
+	<string name="options_menu_Related">Related</string>
+	<string name="options_menu_Comments">Comments</string>
 	
 	<string name="context_DownloadNow">Download Now</string>
 	<string name="context_DownloadNext">Download Next</string>

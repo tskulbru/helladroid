@@ -92,6 +92,14 @@ public class NewzBinController {
 			xr.setContentHandler(handler);
 			xr.parse(new InputSource(is));
 			detailedReports.put(id, handler.getParsedData());
+			// Temp
+			ArrayList<NewzBinReportComment> comments = handler.nbdr.getComments();
+			Log.i(LOG_NAME, "Comments size: " + comments.size());
+			Iterator<NewzBinReportComment> sd = comments.iterator();
+			while(sd.hasNext()) {
+				NewzBinReportComment nrc = sd.next();
+				Log.i(LOG_NAME, nrc.toString());
+			}
 			return handler.getParsedData();
 		} catch (ClientProtocolException e) {
 			Log.e(LOG_NAME, "ClientProtocol thrown: ", e);

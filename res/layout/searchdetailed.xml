@@ -1,144 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content">
-	<LinearLayout 
-		android:layout_width="wrap_content"
+	android:layout_height="fill_parent"
+	android:orientation="vertical">
+	<ScrollView
+		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content">
-		<TableLayout 
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent" 
-			android:stretchColumns="1"
-			android:scrollbarAlwaysDrawVerticalTrack="true">
-			<TableRow>
-				<TextView 
-					android:text="@+string/detailedTitleLabel"
-					android:id="@+id/detailedTitleLabel" 
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content" 
-					android:textStyle="bold"
-					android:gravity="right" />
-				<TextView 
-					android:layout_marginLeft="10px" 
-					android:id="@+id/detailedTitle"
-					android:layout_width="wrap_content" 
-					android:layout_height="wrap_content" />
-			</TableRow>
-			<TableRow>
-				<TextView 
-					android:text="@+string/detailedStatusLabel"
-					android:id="@+id/detailedStatusLabel" 
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content" 
-					android:textStyle="bold"
-					android:gravity="right" />
-				<TextView 
-					android:layout_marginLeft="10px" 
-					android:id="@+id/detailedStatus"
-					android:layout_width="wrap_content" 
-					android:layout_height="wrap_content" />
-			</TableRow>
-			<TableRow>
-				<TextView 
-					android:text="@+string/detailedProgressLabel"
-					android:id="@+id/detailedProgressLabel" 
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content" 
-					android:textStyle="bold"
-					android:gravity="right" />
-				<TextView 
-					android:layout_marginLeft="10px" 
-					android:id="@+id/detailedProgress"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content" />
-			</TableRow>
-			<TableRow>
-				<TextView 
-					android:text="@+string/detailedUrlLabel"
-					android:id="@+id/detailedUrlLabel" 
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content" 
-					android:textStyle="bold"
-					android:gravity="right" />
-				<TextView 
-					android:layout_marginLeft="10px" 
-					android:id="@+id/detailedUrl"
-					android:layout_width="wrap_content" 
-					android:layout_height="wrap_content"
-					android:autoLink="all" 
-					android:linksClickable="true" />
-			</TableRow>
-			<TableRow>
-				<TextView 
-					android:text="@+string/detailedPosterLabel"
-					android:id="@+id/detailedPosterLabel" 
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textStyle="bold"
-					android:gravity="right" />
-				<TextView 
-					android:layout_marginLeft="10px" 
-					android:id="@+id/detailedPoster"
-					android:layout_width="wrap_content" 
-					android:layout_height="wrap_content" />
-			</TableRow>
-			<TableRow>
-				<TextView 
-					android:text="@+string/detailedReportedLabel"
-					android:id="@+id/detailedReportedLabel" 
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content" 
-					android:textStyle="bold"
-					android:gravity="right" />
-				<TextView 
-					android:layout_marginLeft="10px" 
-					android:id="@+id/detailedReported"
-					android:layout_width="wrap_content" 
-					android:layout_height="wrap_content" />
-			</TableRow>
-			<TableRow>
-				<TextView 
-					android:text="@+string/detailedSizeLabel"
-					android:id="@+id/detailedSizeLabel" 
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content" 
-					android:textStyle="bold"
-					android:gravity="right" />
-				<TextView 
-					android:layout_marginLeft="10px" 
-					android:id="@+id/detailedSize"
-					android:layout_width="wrap_content" 
-					android:layout_height="wrap_content" />
-			</TableRow>
-			<TableRow>
-				<TextView 
-					android:text="@+string/detailedNewsgroupsLabel"
-					android:id="@+id/detailedNewsgroupsLabel" 
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content" 
-					android:textStyle="bold"
-					android:gravity="right" />
-				<TextView 
-					android:layout_marginLeft="10px"
-					android:id="@+id/detailedNewsgroups" 
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content" />
-			</TableRow>
-			<TableRow>
-				<TextView 
-					android:text="@+string/detailedAttributesLabel"
-					android:id="@+id/detailedAttributesLabel" 
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content" 
-					android:textStyle="bold"
-					android:gravity="right" />
-				<TextView 
-					android:layout_marginLeft="10px"
-					android:id="@+id/detailedAttributes" 
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content" />
-			</TableRow>
-		</TableLayout>
-	</LinearLayout>
-</ScrollView>
+		<LinearLayout 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<TableLayout 
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent" 
+				android:stretchColumns="1"
+				android:scrollbarAlwaysDrawVerticalTrack="true">
+				<TableRow>
+					<TextView 
+						android:text="@+string/detailedTitleLabel"
+						android:id="@+id/detailedTitleLabel" 
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content" 
+						android:textStyle="bold"
+						android:gravity="right" />
+					<TextView 
+						android:layout_marginLeft="10px" 
+						android:id="@+id/detailedTitle"
+						android:layout_width="wrap_content" 
+						android:layout_height="wrap_content" />
+				</TableRow>
+				<TableRow>
+					<TextView 
+						android:text="@+string/detailedStatusLabel"
+						android:id="@+id/detailedStatusLabel" 
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content" 
+						android:textStyle="bold"
+						android:gravity="right" />
+					<TextView 
+						android:layout_marginLeft="10px" 
+						android:id="@+id/detailedStatus"
+						android:layout_width="wrap_content" 
+						android:layout_height="wrap_content" />
+				</TableRow>	
+				<TableRow>
+					<TextView 
+						android:text="@+string/detailedProgressLabel"
+						android:id="@+id/detailedProgressLabel" 
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content" 
+						android:textStyle="bold"
+						android:gravity="right" />
+					<TextView 
+						android:layout_marginLeft="10px" 
+						android:id="@+id/detailedProgress"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content" />
+				</TableRow>
+				<TableRow>
+					<TextView 
+						android:text="@+string/detailedUrlLabel"
+						android:id="@+id/detailedUrlLabel" 
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content" 
+						android:textStyle="bold"
+						android:gravity="right" />
+					<TextView 
+						android:layout_marginLeft="10px" 
+						android:id="@+id/detailedUrl"
+						android:layout_width="wrap_content" 
+						android:layout_height="wrap_content"
+						android:autoLink="all" 
+						android:linksClickable="true" />
+				</TableRow>
+				<TableRow>
+					<TextView 
+						android:text="@+string/detailedPosterLabel"
+						android:id="@+id/detailedPosterLabel" 
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textStyle="bold"
+						android:gravity="right" />
+					<TextView 
+						android:layout_marginLeft="10px" 
+						android:id="@+id/detailedPoster"
+						android:layout_width="wrap_content" 
+						android:layout_height="wrap_content" />
+					</TableRow>
+				<TableRow>
+					<TextView 
+						android:text="@+string/detailedReportedLabel"
+						android:id="@+id/detailedReportedLabel" 
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content" 
+						android:textStyle="bold"
+						android:gravity="right" />
+					<TextView 
+						android:layout_marginLeft="10px" 
+						android:id="@+id/detailedReported"
+						android:layout_width="wrap_content" 
+						android:layout_height="wrap_content" />
+				</TableRow>
+				<TableRow>
+					<TextView 
+						android:text="@+string/detailedSizeLabel"
+						android:id="@+id/detailedSizeLabel" 
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content" 
+						android:textStyle="bold"
+						android:gravity="right" />
+					<TextView 
+						android:layout_marginLeft="10px" 
+						android:id="@+id/detailedSize"
+						android:layout_width="wrap_content" 
+						android:layout_height="wrap_content" />
+				</TableRow>
+				<TableRow>
+					<TextView 
+						android:text="@+string/detailedNewsgroupsLabel"
+						android:id="@+id/detailedNewsgroupsLabel" 
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content" 
+						android:textStyle="bold"
+						android:gravity="right" />
+					<TextView 
+						android:layout_marginLeft="10px"
+						android:id="@+id/detailedNewsgroups" 
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content" />
+				</TableRow>
+				<TableRow>
+					<TextView 
+						android:text="@+string/detailedAttributesLabel"
+						android:id="@+id/detailedAttributesLabel" 
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content" 
+						android:textStyle="bold"
+						android:gravity="right" />
+					<TextView 
+						android:layout_marginLeft="10px"
+						android:id="@+id/detailedAttributes" 
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content" />
+				</TableRow>
+			</TableLayout>
+		</LinearLayout>
+	</ScrollView>
+</LinearLayout>

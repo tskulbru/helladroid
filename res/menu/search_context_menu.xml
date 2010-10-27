@@ -4,4 +4,7 @@
 	<item 
 		android:id="@+id/searchItemDownloadNow" 
 		android:title="@string/options_menu_Download"/>
+	<item
+		android:id="@+id/searchItemRelated"
+		android:title="@string/options_menu_Related"/>
 </menu>

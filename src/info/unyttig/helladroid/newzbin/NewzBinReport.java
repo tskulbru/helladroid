@@ -45,6 +45,7 @@ public class NewzBinReport {
 	private HashMap<String, Long> dates;
 	private ArrayList<String> newsgroups;
 	private HashMap<String, ArrayList<String>> attributes;
+	private ArrayList<NewzBinReportComment> comments;
 	
 	/* Getters and setters */
 	public String getNb32id() {
@@ -173,5 +174,11 @@ public class NewzBinReport {
 				+ ", poster=" + poster + ", progress=" + progress + ", size="
 				+ size + ", status=" + status + ", title=" + title + ", url="
 				+ url + "]";
+	}
+	public void setComments(ArrayList<NewzBinReportComment> comments) {
+		this.comments = comments;
+	}
+	public ArrayList<NewzBinReportComment> getComments() {
+		return comments;
 	}
 }

@@ -5,6 +5,7 @@ import info.unyttig.helladroid.hellanzb.HellaNZBController;
 import info.unyttig.helladroid.newzbin.NewzBinController;
 import info.unyttig.helladroid.newzbin.NewzBinReport;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -45,7 +46,7 @@ public class NewzBinDetailedSearch extends Activity {
 	/**
 	 * Called when activity is first created
 	 */
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.searchdetailed);
 		fillView();
@@ -56,8 +57,21 @@ public class NewzBinDetailedSearch extends Activity {
 	 */
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.search_menu3, menu);
+		inflater.inflate(R.menu.newzbin_search_detailed_menu, menu);
 		return true;
+	}
+	
+	/**
+	 * Define if the next button should be called, 
+	 * is called before optionsmenu is created.
+	 */
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem dComments = menu.findItem(R.id.detailedComments);
+		if(nbdr.getComments().isEmpty())
+			dComments.setVisible(false);
+		else
+			dComments.setVisible(true);
+		return super.onPrepareOptionsMenu(menu);
 	}
 	
 	/**
@@ -67,6 +81,11 @@ public class NewzBinDetailedSearch extends Activity {
 		switch(item.getItemId()) {
 		case R.id.detailedAddDownload:
 			HellaNZBController.enqueueNewzBinID(messageHandler, ""+nbdr.getNzbId());
+			return true;
+		case R.id.detailedComments:
+			Intent commentsIntent = new Intent(this, NewzBinCommentsActivity.class);
+			commentsIntent.putExtra("info.unyttig.helladroid.newzbin.NewzBinReport.nzbId", this.nbdr.getNzbId());
+			startActivity(commentsIntent);
 			return true;
 		} return false;
 	}

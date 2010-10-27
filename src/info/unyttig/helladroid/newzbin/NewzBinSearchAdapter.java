@@ -39,8 +39,7 @@ public class NewzBinSearchAdapter extends ArrayAdapter<NewzBinReport> {
 	private ArrayList<NewzBinReport> searchItems = new ArrayList<NewzBinReport>();
 	Activity context;
 	
-	public NewzBinSearchAdapter(Activity context, ArrayList<NewzBinReport> searchItems)
-	{
+	public NewzBinSearchAdapter(Activity context, ArrayList<NewzBinReport> searchItems) {
 		super(context, R.layout.searchnzbitem, searchItems);
 
 		this.context = context;

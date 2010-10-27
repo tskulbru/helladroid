@@ -2,6 +2,8 @@ package info.unyttig.helladroid.newzbin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -68,7 +70,12 @@ public class NewzBinDRHandler extends DefaultHandler {
 	private ArrayList<String> newsgroups = new ArrayList<String>();
 	private String tempStr;
 	private String tempAttr;
-
+	private ArrayList<NewzBinReportComment> comments = new ArrayList<NewzBinReportComment>();
+	private String tempCAuthor;
+	private Long tempCDate;
+	private String tempCBody;
+	private StringBuilder builder;
+	
 	NewzBinReport nbdr;
 
 	/**
@@ -83,8 +90,10 @@ public class NewzBinDRHandler extends DefaultHandler {
 	 * Starts the parsing
 	 */
 	public void startDocument() throws SAXException {
+		super.startDocument();
 		if(nbdr == null)
 			this.nbdr = new NewzBinReport();
+		builder = new StringBuilder();
 	}
 
 	/**
@@ -99,6 +108,7 @@ public class NewzBinDRHandler extends DefaultHandler {
 	 */
 	public void startElement(String namespaceURI, String localName, 
 			String qName, Attributes atts) throws SAXException {
+		super.startElement(namespaceURI, localName, qName, atts);
 		if(localName.equals("reportinfo")) {
 			this.in_reportinfo = true;
 		} else if(localName.equals("id")) {
@@ -152,6 +162,8 @@ public class NewzBinDRHandler extends DefaultHandler {
 			this.in_comments = true;
 		} else if(localName.equals("comment")) {
 			this.in_comments_comment = true;
+			this.tempCAuthor = atts.getValue("author");
+			this.tempCDate = Long.parseLong(atts.getValue("date"));
 		} else if(localName.equals("body")) {
 			this.in_comments_comment_body = true;
 		} else if(localName.equals("files")) {
@@ -164,6 +176,7 @@ public class NewzBinDRHandler extends DefaultHandler {
 	 */
 	public void endElement(String namespaceURI, String localName, 
 			String qName) throws SAXException { 
+		super.endElement(namespaceURI, localName, qName);
 		if(localName.equals("reportinfo")) {
 			this.in_reportinfo = false;
 		} else if(localName.equals("id")) {
@@ -213,7 +226,11 @@ public class NewzBinDRHandler extends DefaultHandler {
 			this.in_tags = false;
 		} else if(localName.equals("comments")) {
 			this.in_comments = false;
+			this.nbdr.setComments(comments);
 		} else if(localName.equals("comment")) {
+//			Log.i("adsasdasd ", builder.toString().replaceAll("<[^<]+?>", "  "));
+//			comments.add(new NewzBinReportComment(this.tempCAuthor, this.tempCDate, builder.toString()));
+			comments.add(new NewzBinReportComment(this.tempCAuthor, this.tempCDate, builder.toString().replaceAll("<[^<]+?>", "  ")));
 			this.in_comments_comment = false;
 		} else if(localName.equals("body")) {
 			this.in_comments_comment_body = false;
@@ -227,6 +244,7 @@ public class NewzBinDRHandler extends DefaultHandler {
 	 */
 	public void characters(char ch[], int start, int length) {
 		try {
+			super.characters(ch, start, length);
 			if(this.in_id) {
 				this.nbdr.setNzbId(Integer.parseInt(new String(ch, start, length)));
 			} else if(this.in_title) {
@@ -262,6 +280,8 @@ public class NewzBinDRHandler extends DefaultHandler {
 					attrs.add(new String(ch, start, length));
 				}
 				attributes.put(tempAttr, attrs);
+			} else if(this.in_comments_comment_body) {
+				builder.append(ch, start, length);
 			}
 		} catch(Exception e) {
 			Log.e("NewzBinDRHandler: ", "XMLError: ", e);

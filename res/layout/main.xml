@@ -10,7 +10,7 @@
 		android:layout_height="wrap_content"
 		admobsdk:backgroundColor="#000000"
 		admobsdk:textColor="#FFFFFF"
-		admobsdk:keywords="Android application Usenet Nzb"
+		admobsdk:keywords="Android Usenet Nzb Programming Computer"
 		/>
 	<RelativeLayout android:id="@+id/currDownHeaderLayout" 
 		android:layout_width="fill_parent" 
@@ -29,12 +29,13 @@
 			android:layout_height="wrap_content"
 			android:textStyle="bold"
 			android:layout_alignParentRight="true"
-			android:paddingRight="5px" android:textColor="#FF0000"/>
+			android:paddingRight="5px" 
+			android:textColor="#FF0000"
+			/>
 	</RelativeLayout>
 	<RelativeLayout android:id="@+id/currDownLayout" 
 		android:layout_width="fill_parent" 
-		android:layout_height="90px"
-		>
+		android:layout_height="90px">
 		<TextView android:id="@+id/currNzbName" 
 			android:text="Not downloading anything"
 			android:layout_width="fill_parent" 

@@ -9,9 +9,13 @@ import info.unyttig.helladroid.hellanzb.HellaNZBController;
 import info.unyttig.helladroid.newzbin.NewzBinController;
 import info.unyttig.helladroid.newzbin.NewzBinReport;
 import info.unyttig.helladroid.newzbin.NewzBinSearchAdapter;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -56,6 +61,7 @@ public class NewzBinSearchActivity extends ListActivity {
 	private final static int MSG_NEW_STATUS_UPDATE = 1;
 	private final int MSG_NOTIFY_USER_ERROR = 2;
 	private final int SHOW_LOADING_DIALOG = 3;
+	private final int REL_TV = 4;
 	
 	private ArrayList<NewzBinReport> searchRes;
 	private int searchItemsLeft = NewzBinController.totalRes;
@@ -63,6 +69,9 @@ public class NewzBinSearchActivity extends ListActivity {
 	private int offset = 0;
 	private String searchString;
 	private String categoryNr;
+	private String[] regExTemp;
+	
+	private NewzBinReport report;
 
 	/**
 	 * Called when activity is first created
@@ -139,9 +148,22 @@ public class NewzBinSearchActivity extends ListActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 		case R.id.searchItemDownloadNow:
-			NewzBinReport report = (NewzBinReport) this.getListAdapter().getItem((int)info.id);
+			report = (NewzBinReport) this.getListAdapter().getItem((int)info.id);
 			HellaNZBController.enqueueNewzBinID(messageHandler, ""+report.getNzbId());
 			return true;
+		case R.id.searchItemRelated:
+			report = (NewzBinReport) this.getListAdapter().getItem((int)info.id);
+			Log.i("lekekekekeke", HellaDroid.searchCatnHd.get("TV"));
+			Log.i("lekekekekeke2", this.categoryNr);
+			if(categoryNr.equals(HellaDroid.searchCatnHd.get("TV"))) {
+				showDialog(REL_TV);
+				return true;
+			} else {
+				HashMap<String, String> searchOptions = new HashMap<String, String>();
+				searchOptions.put("q", report.getTitle());
+				updateSearchRes(NewzBinController.findReport(messageHandler, searchOptions));
+				return true;
+			}
 		} return false;
 	}
 	
@@ -165,6 +187,38 @@ public class NewzBinSearchActivity extends ListActivity {
 	}
 	
 
+	/**
+	 * The method which contains all the dialogs
+	 */
+	protected Dialog onCreateDialog(int id) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		AlertDialog alert = null;
+
+		switch(id) {
+
+		/* Choose which method to search for related nzbs */
+		case REL_TV:
+			regExTemp = report.getTitle().split("(\\d+ -)");
+			String[] options = { "Same", regExTemp[0] };
+			builder.setTitle("Select method").setItems(options, new OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					switch(which) {
+					case 0:
+						updateSearchRes(findReport(report.getTitle(), HellaDroid.searchCatnHd.get("TV"), 0));
+						break;
+					case 1:
+						updateSearchRes(findReport(regExTemp[0], HellaDroid.searchCatnHd.get("TV"), 0));
+						break;
+					}
+				}
+			});
+			alert = builder.create();
+			break;
+		default:
+			alert = null;
+		} 
+		return alert;
+	}
 	/**
 	 * Fetches result from the controller
 	 * 
