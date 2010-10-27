@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import info.unyttig.helladroid.R;
 import android.app.Activity;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ public class NewzBinCommentAdapter extends ArrayAdapter<NewzBinReportComment> {
 		
 		((TextView) row.findViewById(R.id.commentRowLabelAuthor)).setText(temp.getAuthor());
 		((TextView) row.findViewById(R.id.commentRowLabelDate)).setText(temp.getDate());
-		((TextView) row.findViewById(R.id.commentRowLabelBody)).setText(temp.getBody());
+		((TextView) row.findViewById(R.id.commentRowLabelBody)).setText(Html.fromHtml(temp.getBody()));
 		return (row);
 	}
 }

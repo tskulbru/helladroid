@@ -228,9 +228,8 @@ public class NewzBinDRHandler extends DefaultHandler {
 			this.in_comments = false;
 			this.nbdr.setComments(comments);
 		} else if(localName.equals("comment")) {
-//			Log.i("adsasdasd ", builder.toString().replaceAll("<[^<]+?>", "  "));
-//			comments.add(new NewzBinReportComment(this.tempCAuthor, this.tempCDate, builder.toString()));
-			comments.add(new NewzBinReportComment(this.tempCAuthor, this.tempCDate, builder.toString().replaceAll("<[^<]+?>", "  ")));
+			comments.add(new NewzBinReportComment(this.tempCAuthor, this.tempCDate, builder.toString()));
+//			comments.add(new NewzBinReportComment(this.tempCAuthor, this.tempCDate, builder.toString().replaceAll("<[^<]+?>", "  ")));
 			this.in_comments_comment = false;
 		} else if(localName.equals("body")) {
 			this.in_comments_comment_body = false;
