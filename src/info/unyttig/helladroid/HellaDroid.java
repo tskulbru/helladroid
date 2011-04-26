@@ -751,7 +751,7 @@ public class HellaDroid extends Activity {
 	 * @return
 	 * @throws IOException
 	 */
-	private static String readFile(File file) throws IOException {
+	private String readFile(File file) throws IOException {
 		FileInputStream stream = new FileInputStream(file);
 		try {
 			FileChannel fc = stream.getChannel();

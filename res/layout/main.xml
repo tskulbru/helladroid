@@ -88,7 +88,7 @@
 			android:textStyle="bold"
 			android:paddingLeft="2px"
 			/>
-		</RelativeLayout>
+	</RelativeLayout>
 	<ListView android:id="@+id/queueNzbList"
 		android:layout_weight="1.0"
 		android:layout_width="fill_parent"

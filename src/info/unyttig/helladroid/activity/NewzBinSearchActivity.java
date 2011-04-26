@@ -153,8 +153,6 @@ public class NewzBinSearchActivity extends ListActivity {
 			return true;
 		case R.id.searchItemRelated:
 			report = (NewzBinReport) this.getListAdapter().getItem((int)info.id);
-			Log.i("lekekekekeke", HellaDroid.searchCatnHd.get("TV"));
-			Log.i("lekekekekeke2", this.categoryNr);
 			if(categoryNr.equals(HellaDroid.searchCatnHd.get("TV"))) {
 				showDialog(REL_TV);
 				return true;
