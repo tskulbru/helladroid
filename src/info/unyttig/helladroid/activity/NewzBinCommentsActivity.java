@@ -18,7 +18,6 @@ public class NewzBinCommentsActivity extends ListActivity {
 	/**
 	 * Called when activity is first created
 	 */
-	@SuppressWarnings("unchecked")
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.search);

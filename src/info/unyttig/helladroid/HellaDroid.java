@@ -632,7 +632,6 @@ public class HellaDroid extends Activity {
 			if(values[0].compareTo("Not downloading anything") != 0) {
 				rl.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
 
-					@Override
 					public void onCreateContextMenu(ContextMenu menu, View v,
 							ContextMenuInfo menuInfo) {
 						// TODO Auto-generated method stub
@@ -645,7 +644,6 @@ public class HellaDroid extends Activity {
 			} else {
 				rl.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
 
-					@Override
 					public void onCreateContextMenu(ContextMenu menu, View v,
 							ContextMenuInfo menuInfo) {
 					}
@@ -718,7 +716,6 @@ public class HellaDroid extends Activity {
 		ArrayList<String> filesFound = new ArrayList<String>();
 
 		File[] files = directory.listFiles(new FileFilter() {
-			@Override
 			public boolean accept(File pathname) {
 				if (pathname.isDirectory())
 					return true;

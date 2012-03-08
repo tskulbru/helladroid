@@ -60,7 +60,7 @@ import android.util.Log;
 public class NewzBinController { 
 	private final static String LOG_NAME = "<HellaDroid> NewzbinController: ";
 	private final static SharedPreferences preferences = HellaDroid.preferences;
-	private final static String NBAPIURL = "http://www.newzbin.com/api/";
+	private final static String NBAPIURL = "http://newzbin2.es/api/";
 	private final static int MSG_NOTIFY_USER_ERROR = 2;
 	public static int totalRes;
 	public static HashMap<Integer, NewzBinReport> reports = new HashMap<Integer, NewzBinReport>();
